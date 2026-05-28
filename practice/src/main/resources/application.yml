@@ -10,3 +10,10 @@ spring:
         enabled: true
     dashscope:
       api-key: sk-4487bfdc6bc040dca832f0a91b6c69c4
+
+# enabled debug log out.
+logging:
+  level:
+    org.springframework.ai: debug
+    com.alibaba.dashscope.api: debug
+    com.alibaba.cloud.ai.dashscope.chat: debug
