@@ -1,105 +1,115 @@
-# 🗺️ Spring AI Alibaba 零基础进阶学习计划
+# 🗺️ Spring AI Alibaba 进阶学习计划
 
 ## 🎯 学习前置准备
-- [ ] **环境准备**：确保本地开发环境为 JDK 17 或 JDK 21，Spring Boot 3.2.x+，Maven。
-- [ ] **账号准备**：注册并登录 [阿里云百炼平台](https://bailian.console.aliyun.com/)，开通大模型服务并获取 `API Key`。
-- [ ] **安全提醒**：既然已将 Key 写入本地配置文件，**切勿**将包含真实 Key 的配置文件提交推送到公共或共享仓库！
-- [ ] **小贴士**：**不要一次性导入所有模块！** 每次只用 IDE 打开当前要学的子项目文件夹，避免依赖索引导致电脑卡死。
+- [ ] **环境准备**：JDK 17 或 JDK 21，Spring Boot 3.2.x+，Maven。
+- [ ] **账号准备**：注册并登录阿里云百炼平台，开通大模型服务并获取 API Key。
+- [ ] **安全提醒**：将 Key 写入本地配置文件，切勿将包含真实 Key 的配置文件提交推送到公共仓库。
 
 ---
 
-## 🧭 第一阶段：基础对话与核心 API（新手必看 🏎️）
-> **目标**：掌握 Spring AI 的基本编程模型，别管原理，先让 Java 代码和 AI 说上话。
+## 🧭 第一阶段：基础对话与核心 API
+> **目标**：掌握 Spring AI 的基本编程模型，实现客户端与大模型的通信。
 
 ### 📅 Day 1：让 AI 说话（最简 Hello World）
-- [ ] **通关项目**：[./spring-ai-alibaba-helloworld](./spring-ai-alibaba-helloworld)
-- [ ] **大白话解释**：用最少的配置和代码，让 Java 程序能连上大模型并返回一句回答。适合用来测试网络、API Key 和依赖是否配置正确。
+- [ ] **通关项目**：`./spring-ai-alibaba-helloworld`
+- [ ] **核心概念**：用最少的配置和代码，让 Java 程序连上大模型并返回回答。
 - [ ] **核心任务**：
-  - [ ] 跑通第一个接口，在浏览器中看到 AI 的回复。
-  - [ ] 观察 `application.yml` 里是如何指定通义千问或其它模型的。
-  - [ ] **核心理解**：体会快捷重载方法 `prompt(query)` 的便利性。
+  - [ ] 跑通第一个接口，在浏览器中查看 AI 的回复。
+  - [ ] 观察 `application.yml` 里如何指定具体的模型名称。
+  - [ ] 理解快捷重载方法 `prompt(query)` 的使用。
 
 ### 📅 Day 2：全套聊天模式（流式输出与人设）
-- [ ] **通关项目**：[./spring-ai-alibaba-chat-example](./spring-ai-alibaba-chat-example)
-- [ ] **大白话解释**：演示了单次对话、流式返回（类似 ChatGPT 逐字蹦出）、以及如何通过配置改变 AI 的扮演角色（System Prompt）。
+- [ ] **通关项目**：`./spring-ai-alibaba-chat-example`
+- [ ] **核心概念**：单次对话、流式返回（打字机效果）、以及通过配置改变 AI 的扮演角色（System Prompt）。
 - [ ] **核心任务**：
   - [ ] 理解 `ChatClient` 的链式调用编程范式。
   - [ ] 对比普通同步对话（`.call()`）与打字机流式对话（`.stream()`）的代码区别。
-  - [ ] 学习如何使用 `System Prompt`（系统提示词）给 AI 设定人设（例如：让 AI 扮演代码评审专家）。
+  - [ ] 学习如何使用 `System Prompt`（系统提示词）给 AI 设定人设与角色。
+  - [ ] 掌握 `Advisor` 拦截器机制在多轮对话记忆隔离中的作用。
 
 ---
 
-## 🧩 第二阶段：融入后端业务（数据与提示词交互 🚀）
-> **目标**：让 AI 像一个标准的后端接口一样，能够接收动态变量，并返回标准的 Java 对象，而不是乱七八糟的文本。
+## 🧩 第二阶段：融入后端业务（数据与提示词交互）
+> **目标**：实现提示词与代码解耦，并让大模型返回标准的 Java 对象或特定数据格式。
 
-### 📅 Day 3：提示词（Prompt）管理
-- [ ] **通关项目**：[./spring-ai-alibaba-prompt-example](./spring-ai-alibaba-prompt-example)
-- [ ] **大白话解释**：演示如何把提示词写成模板（像 MyBatis 的 SQL 模板一样），然后动态传入参数组装给 AI，避免在 Java 中用 `+` 拼接字符串。
+### 📅 Day 3：提示词（Prompt）管理与数据填充
+- [ ] **通关项目**：`./spring-ai-alibaba-prompt-example`
+- [ ] **核心概念**：提示词模板化与本地小规模数据的 Stuff（填充）模式。
 - [ ] **核心任务**：
   - [ ] 掌握 `PromptTemplate` 的使用，实现提示词文本与 Java 代码的解耦。
-  - [ ] 理解为什么引入 `Prompt` 对象（为了工程化、模板化组合拳，解决复杂企业级开发痛点）。
+  - [ ] 理解为什么引入 `Prompt` 对象进行多消息（System、User）的组合编排。
+  - [ ] 理解 Stuff 模式的定义：将本地私有数据作为上下文变量直接塞入提示词。
 
-### 📅 Day 4：结构化输出（最实用重头戏 ⭐️）
-- [ ] **通关项目**：[./spring-ai-alibaba-structured-example](./spring-ai-alibaba-structured-example)
-- [ ] **大白话解释**：演示如何让 AI 乖乖听话，把回答的内容直接转换成一个标准的 Java Bean（POJO）或 Map/List。比如输入“张三28岁”，AI 直接返回一个给装好数据的 User 对象。
+### 📅 Day 4：结构化输出（对象映射）
+- [ ] **通关项目**：`./spring-ai-alibaba-structured-example`
+- [ ] **核心概念**：通过 JSON Schema 约束大模型返回纯净 JSON，并反序列化为 Java 对象。
 - [ ] **核心任务**：
-  - [ ] 深刻理解为什么此时**必须**调用无参 `.prompt()` 转入完全体 Builder 模式（因为快捷方法点不出高级的 `.output()`）。
-  - [ ] 学习使用 `BeanOutputConverter`，强制大模型返回符合 JSON Schema 的数据，并利用终止站 `.entity()` 直接接收 Java 实体类。
+  - [ ] 理解为什么此时必须调用无参 `.prompt()` 转入完全体 Builder 模式。
+  - [ ] 掌握单对象映射：`.entity(Class)` 的核心用法。
+  - [ ] 掌握泛型集合与 Map 映射：利用 `ParameterizedTypeReference` 处理类型擦除。
+  - [ ] 通过日志观察底层在 `context` 中隐式注入的 JSON Schema 指令。
 
 ---
 
-## 🛠️ 第三阶段：能力扩展（工具调用与新协议 🛠️）
-> **目标**：打破大模型“只能聊天”的限制，让 AI 能够连接你的后端代码和外部世界。
+## 🛠️ 第三阶段：能力扩展（工具调用与统一协议）
+> **目标**：打破大模型静态限制，实现大模型对后端 Java 方法的自发触发与调用。
 
 ### 📅 Day 5：让 AI 调用你的代码（Function Calling）
-- [ ] **通关项目**：[./spring-ai-alibaba-tool-calling-example](./spring-ai-alibaba-tool-calling-example)
-- [ ] **大白话解释**：教你如何把一个普通的 Java 本地方法注册为“工具”，让 AI 自动根据用户的意图去调用它。比如你写个 `getWeather` 方法，用户问天气时，AI 会自动调用这个 Java 方法拿数据。
+- [ ] **通关项目**：`./spring-ai-alibaba-tool-calling-example`
+- [ ] **核心概念**：将本地 Java 方法注册为工具，由大模型根据用户意图决定是否调用。
 - [ ] **核心任务**：
-  - [ ] 理解函数调用的底层原理（User ➡️ System ➡️ Tool Message ➡️ Assistant）。
-  - [ ] 成功将本地一个查询方法注册为 AI 工具，并观察 AI 自发触发该方法的过程。
+  - [ ] 理解函数调用的底层握手原理与返回状态（`finishReason: TOOL_CALLS`）。
+  - [ ] 成功将本地一个查询方法注册为 AI 工具，并观察本地方法被触发的过程。
 
 ### 📅 Day 6：对接统一工具协议（MCP 趋势）
-- [ ] **通关项目**：[./spring-ai-alibaba-mcp-example](./spring-ai-alibaba-mcp-example)
-- [ ] **大白话解释**：演示如何利用最新的模型上下文协议（MCP），让你的 AI 能够像插 U 盘一样，直接连上外部现成的 MCP 服务器（比如读取文件系统、连接外部数据库），体验无需为每种工具写对接代码的便利性。
+- [ ] **通关项目**：`./spring-ai-alibaba-mcp-example`
+- [ ] **核心概念**：模型上下文协议（Model Context Protocol），将工具独立解耦为 MCP 服务。
+- [ ] **核心任务**：
+  - [ ] 了解 MCP 协议的诞生背景与解耦逻辑。
+  - [ ] 体验 `ChatClient` 连接外部现成 MCP 服务器动态获取工具的流程。
 
 ---
 
-## 📚 第四阶段：知识库建设（RAG 检索增强生成 📚）
-> **目标**：解决大模型不知道企业私有机密或即时新闻的问题——先去私有文档里查资料，再让 AI 结合资料回答。
+## 📚 第四阶段：知识库建设（RAG 检索增强生成）
+> **目标**：解决海量私有文档超出大模型上下文窗口限制的痛点，实现企业知识库检索。
 
-### 📅 Day 7-8：打造私有知识库与向量存储
-- [ ] **通关项目（准备）**：[./spring-ai-alibaba-vector-store-example](./spring-ai-alibaba-vector-store-example)
-- [ ] **大白话解释**：专门演示如何对接各种主流的向量数据库（如阿里云的 DashVector、开源的 PGVector 等），学习数据是怎么被变成一串数字（Embedding）并存进数据库的。
-- [ ] **通关项目（核心）**：[./spring-ai-alibaba-rag-example](./spring-ai-alibaba-rag-example)
-- [ ] **大白话解释**：标准 RAG 流程。演示了怎么读取一个本地的 `.txt` 或 `.pdf` 文件，把它切碎、变成向量存起来，最后让 AI 看着这份文件回答问题。实现了最基础的“企业私有知识库/智能客服”。
+### 📅 Day 7：打造私有知识库与向量存储
+- [ ] **通关项目（准备）**：`./spring-ai-alibaba-vector-store-example`
+- [ ] **通关项目（核心）**：`./spring-ai-alibaba-rag-example`
+- [ ] **核心概念**：文本切片（Splitter）、向量化（Embedding）、向量数据库检索（Vector Store）与最终的上下文组装。
+- [ ] **核心任务**：
+  - [ ] 掌握如何将本地 `.txt` 或 `.pdf` 文件进行读取和切片。
+  - [ ] 掌握如何对接向量数据库并存储向量数据。
+  - [ ] 理解标准 RAG 链路：先检索相关片段，再将片段通过 Stuff 模式塞进大模型上下文。
 
 ---
 
-## 🤖 第五阶段：高级业务场景与 Agent（智能体落地 🤖）
-> **目标**：把上面的基础拼装在一起，做出具备“自主思考”和“处理复杂业务”的高级 AI 应用。
+## 🤖 第五阶段：高级业务场景与 Agent（智能体落地）
+> **目标**：融合记忆、提示词、工具调用、知识库检索，构建具备自主决策能力的复杂应用。
 
-### 📅 Day 9：构建自主思考的智能体
-- [ ] **通关项目**：[./spring-ai-alibaba-agent-example](./spring-ai-alibaba-agent-example)
-- [ ] **大白话解释**：把“记忆（Memory）”和“工具（Tools）”塞给 AI，给它一个复杂的目标，让它自己思考、拆解步骤并多次调用工具完成。演示了一个具备自主决策能力的 AI 助理是如何构建的。
+### 📅 Day 8：构建自主思考的智能体
+- [ ] **通关项目**：`./spring-ai-alibaba-agent-example`
+- [ ] **核心概念**：Agent 模式，赋予大模型目标，由其自主拆解步骤并多次循环调用工具完成任务。
+- [ ] **核心任务**：
+  - [ ] 理解记忆（Memory）与工具（Tools）在 Agent 决策循环中的配合机制。
 
-### 📅 Day 10+：终极综合压轴大戏
-- [ ] **通关项目（数据智能体）**：[./spring-ai-alibaba-nl2sql-example](./spring-ai-alibaba-nl2sql-example)
-- [ ] **大白话解释**：大白话转 SQL (DataAgent)。用户输入一句中文（如“查一下上个月上海区域的销售总额”），AI 会自动理解你的数据库表结构，生成正确的 SQL 并去查数据库，最后把结果展示给用户。非常适合用来做企业内部的智能报表系统。
-- [ ] **通关项目（高阶业务实战）**：[./spring-ai-alibaba-flight-booking-example](./spring-ai-alibaba-flight-booking-example)
-- [ ] **大白话解释**：机票预订系统。一个高度接近真实业务的综合 Sample。里面模拟了查机票、改签、退票等一系列复杂的真实业务流程。它把对话、工具调用、记忆管理和状态机全部融合在了一个订票业务里。
+### 📅 Day 9：数据智能体（NL2SQL 案例）
+- [ ] **通关项目**：`./spring-ai-alibaba-nl2sql-example`
+- [ ] **核心概念**：大白话转 SQL。AI 自动理解数据库表结构，生成正确的 SQL 并去查数据库。
+- [ ] **核心任务**：
+  - [ ] 掌握如何向大模型输入元数据（表结构描述）以生成准确 SQL。
+
+### 📅 Day 10+：终极综合高阶业务实战
+- [ ] **通关项目**：`./spring-ai-alibaba-flight-booking-example`
+- [ ] **核心概念**：机票预订系统。融合了对话、工具调用、记忆管理、状态机与拦截器的企业级综合案例。
+- [ ] **核心任务**：
+  - [ ] 剖析业务流程，理解大模型在复杂状态流转下的行为特征。
 
 ---
 
 ## 👑 第六阶段：毕业闭环（实战演练）
-- [ ] **终极挑战**：脱离当前大仓库，在 Gitea 上自己从零新建一个独立的 Spring Boot 项目，徒手写一个**“智能个人记账/理财助理”**。
-  - **核心流程**：用户输入大白话 ➡️ AI 结构化提取记账字段（第二阶段核心） ➡️ AI 自动调用你的 Java 方法存入数据库（第三阶段核心） ➡️ AI 结合你的历史账单 RAG 给出理财建议（第四阶段核心）。
-
----
-
-## 💡 刷项目的核心避坑路线总结：
-> ⚠️ **警告**：开始学习时，**千万不要先看 `flight-booking` 或者 `agent`**，里面复杂的业务逻辑和配置会让人抓狂。
->
-> 🚀 **高效通关捷径**：
-> `helloworld` 跑通配置 ➡️ `chat` 掌握对话 ➡️ `structured` 学会数据交互 ➡️ `tool-calling` 学会给 AI 喂工具。
->
-> 这四个核心看懂了，你就可以直接开始在公司里做大部分基础的 AI 业务开发了！加油！
+- [ ] **项目名称**：智能个人财务记账与理财助理
+- [ ] **技术要求**：脱离官方示例仓库，独立新建 Spring Boot 项目并实现：
+  1. 用户输入大白话 ➡️ 结构化提取记账字段。
+  2. 自动触发本地 Java 业务方法存入 MySQL。
+  3. 结合用户历史账单数据与外部 RAG 知识库给出财务建议。
