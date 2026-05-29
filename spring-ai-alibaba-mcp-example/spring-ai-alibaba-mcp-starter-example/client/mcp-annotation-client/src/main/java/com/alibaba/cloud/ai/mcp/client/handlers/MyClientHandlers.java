@@ -33,20 +33,20 @@ public class MyClientHandlers {
 
     private static final Logger logger = LoggerFactory.getLogger(MyClientHandlers.class);
 
-    @McpLogging(clients = "my-mcp-client")
+    @McpLogging(clients = "time-server")
     public void handleLogs(McpSchema.LoggingMessageNotification notification) {
         // Handle logs
         logger.info("Logs: {}", notification.data());
     }
 
-    @McpSampling(clients = "my-mcp-client")
+    @McpSampling(clients = "time-server")
     public McpSchema.CreateMessageResult handleSampling(McpSchema.CreateMessageRequest request) {
         // Handle sampling
         logger.info("Sampling: {}", request.messages());
         return null;
     }
 
-    @McpProgress(clients = "my-mcp-client")
+    @McpProgress(clients = "time-server")
     public void handleProgress(McpSchema.ProgressNotification notification) {
         // Handle progress
         logger.info("Progress: {}", notification);

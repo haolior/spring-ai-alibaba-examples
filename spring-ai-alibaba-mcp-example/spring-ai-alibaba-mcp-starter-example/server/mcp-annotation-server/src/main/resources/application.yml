@@ -1,0 +1,39 @@
+server:
+  port: 20000
+
+spring:
+  application:
+    name: mcp-streamable-webflux-annotation-server
+  ai:
+    mcp:
+      server:
+        enabled: true
+        name: streamable-annotation-mcp-server
+        protocol: streamable # SSE、STREAMABLE、STATELESS
+        version: 1.0.0
+        type: ASYNC  # ⭐使用异步的时候如果要使用注解自动注册那么就需要将工具返回值调整为响应式类型 注意！！！
+        instructions: "该响应式服务器提供时间信息工具和资源"
+        capabilities:
+          tool: true
+          resource: true
+          prompt: true
+          completion: true
+        request-timeout: 20s
+        streamable-http:
+          mcp-endpoint: /mcp
+          keep-alive-interval: 30s
+          disallow-delete: false
+        stdio: false
+        annotation-scanner:
+          enabled: true
+
+
+
+# 调试日志
+logging:
+  level:
+    io:
+      modelcontextprotocol:
+        client: DEBUG
+        spec: DEBUG
+        server: DEBUG

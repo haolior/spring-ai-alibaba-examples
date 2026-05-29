@@ -16,11 +16,15 @@
 
 package com.alibaba.cloud.ai.mcp.server.tool;
 
+import io.modelcontextprotocol.server.McpServer;
+import io.modelcontextprotocol.server.McpSyncServerExchange;
+import io.modelcontextprotocol.spec.McpSchema;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springaicommunity.mcp.annotation.McpTool;
 import org.springaicommunity.mcp.annotation.McpToolParam;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -35,11 +39,15 @@ public class TimeTool {
 
     private static final Logger logger = LoggerFactory.getLogger(TimeTool.class);
 
+
     @McpTool(name = "getCityTime", description = "Get the time of a specified city.")
-    public String  getCityTimeMethod(@McpToolParam(description = "Time zone id, such as Asia/Shanghai", required = true) String timeZoneId) {
+    public Mono<String> getCityTimeMethod(@McpToolParam(description = "Time zone id, such as Asia/Shanghai", required = true) String timeZoneId) {
         logger.info("The current time zone is {}", timeZoneId);
-        return String.format("The current time zone is %s and the current time is " + "%s", timeZoneId,
-                getTimeByZoneId(timeZoneId));
+
+        return Mono.just(
+                String.format("The current time zone is %s and the current time is " + "%s", timeZoneId,
+                getTimeByZoneId(timeZoneId))
+        );
     }
 
     private String getTimeByZoneId(String zoneId) {
