@@ -35,13 +35,14 @@
 	<description>Spring AI Alibaba MCP Example</description>
 	<name>Spring AI Alibaba MCP Examples</name>
 
+
 	<modules>
-		<module>spring-ai-alibaba-mcp-manual-example</module>
 		<module>spring-ai-alibaba-mcp-starter-example</module>
-		<module>spring-ai-alibaba-mcp-build-example</module>
-        <module>spring-ai-alibaba-mcp-nacos-example</module>
-        <module>spring-ai-alibaba-mcp-auth-example</module>
-        <module>spring-ai-alibaba-mcp-config-example</module>
+<!--		<module>spring-ai-alibaba-mcp-manual-example</module>-->
+<!--		<module>spring-ai-alibaba-mcp-build-example</module>-->
+<!--        <module>spring-ai-alibaba-mcp-nacos-example</module>-->
+<!--        <module>spring-ai-alibaba-mcp-auth-example</module>-->
+<!--        <module>spring-ai-alibaba-mcp-config-example</module>-->
     </modules>
 
 	<build>

@@ -8,11 +8,11 @@ spring:
     web-application-type: none
   ai:
     openai:
-      api-key: ${DASHSCOPE_API_KEY}
+      api-key: sk-4487bfdc6bc040dca832f0a91b6c69c4
       base-url: https://dashscope.aliyuncs.com/compatible-mode
       chat:
         options:
-          model: qwen-max
+          model: deepseek-v4-flash
     mcp:
       client:
         enabled: true

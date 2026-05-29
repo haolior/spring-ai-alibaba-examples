@@ -10,6 +10,13 @@ spring:
       client:
         stdio:
           servers-configuration: classpath:/mcp-servers-config.json
+        enabled: true
+        name: "stdio-mcp"
+        initialized: true
+        request-timeout: 3s
+        toolcallback:
+          enabled: true
+
   mandatory-file-encoding: UTF-8
 
 # 调试日志

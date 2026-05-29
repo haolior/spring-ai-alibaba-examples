@@ -9,10 +9,14 @@ spring:
   ai:
     dashscope:
       api-key: ${AI_DASHSCOPE_API_KEY}
+      chat:
+        options:
+          model: deepseek-v4-flash
     mcp:
       client:
         sse:
           connections:
-            server1:
-              # 实际的连接地址为：http://localhost:8080/sse/mcp
-              url: http://localhost:8080/
+            weather-server:
+              # 实际的连接地址为：http://localhost:8080/sse/weather/mcp
+              url: http://localhost:8080
+

@@ -7,6 +7,12 @@ spring:
       server:
         name: my-weather-server
         stdio: true
+        enabled: true
+        version: 1.0.0
+        annotation-scanner:
+          enabled: false
+        instructions: '天气MCP 提供天气信息'
+        request-timeout: 10s
 
 # NOTE: You must disable the banner and the console logging 
 # to allow the STDIO transport to work !!!

@@ -27,11 +27,15 @@ spring:
   ai:
     mcp:
       server:
+        enabled: true
+        stdio: false
         name: my-weather-server
         type: ASYNC  # Recommended for reactive applications
         # 配置 sse 的根路径，默认值为 /sse
-        # 下面的最终路径为 ip:port/sse/mcp
+        # 下面的最终路径为 ip:port/weather/mcp
         protocol: sse
         sse-endpoint: /sse
-        sse-message-endpoint: /mcp
+        sse-message-endpoint: /weather/mcp
+        version: 2.0.0
+        instructions: "这是 sse 的方式"
 
