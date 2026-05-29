@@ -17,6 +17,6 @@ spring:
         sse:
           connections:
             weather-server:
-              # 实际的连接地址为：http://localhost:8080/sse/weather/mcp
               url: http://localhost:8080
+              sse-endpoint: /weather/sse
 

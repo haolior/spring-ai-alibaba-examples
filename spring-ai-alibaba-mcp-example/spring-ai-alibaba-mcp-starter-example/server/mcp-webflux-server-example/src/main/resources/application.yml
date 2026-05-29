@@ -34,8 +34,8 @@ spring:
         # 配置 sse 的根路径，默认值为 /sse
         # 下面的最终路径为 ip:port/weather/mcp
         protocol: sse
-        sse-endpoint: /sse
-        sse-message-endpoint: /weather/mcp
+        sse-endpoint: /weather/sse  # 建立连接的端点（客户端也有，注意要保持一致）
+        sse-message-endpoint: /weather/mcp  # 投送消息的端点（客户端没有这个，会在建立连接后告诉客户端投递消息的端点）
         version: 2.0.0
         instructions: "这是 sse 的方式"
 
