@@ -11,7 +11,7 @@ spring:
         protocol: STREAMABLE # SSE、STREAMABLE、STATELESS
         version: 1.0.0
         type: ASYNC  # Recommended for reactive applications
-        instructions: "This reactive server provides time information tools and resources"
+        instructions: "该响应式服务器提供时间信息工具和资源"
         request-timeout: 20s
         streamable-http:
           mcp-endpoint: /mcp

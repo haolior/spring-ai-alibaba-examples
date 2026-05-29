@@ -17,6 +17,7 @@
 package com.alibaba.cloud.ai.mcp.client;
 
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.tool.ToolCallback;
 import org.springframework.ai.tool.ToolCallbackProvider;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -40,6 +41,12 @@ public class StreamableWebfluxClientApplication {
     @Bean
     public CommandLineRunner predefinedQuestions(ChatClient.Builder chatClientBuilder, ToolCallbackProvider tools,
                                                  ConfigurableApplicationContext context) {
+
+        ToolCallback[] toolCallbacks = tools.getToolCallbacks();
+        System.out.println("Available tools:");
+        for (ToolCallback toolCallback : toolCallbacks) {
+            System.out.println(">>> " + toolCallback.getToolDefinition().name() + ", " + toolCallback.getToolDefinition().description());
+        }
 
         return args -> {
             var chatClient = chatClientBuilder

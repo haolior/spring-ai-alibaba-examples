@@ -17,7 +17,9 @@
 package com.alibaba.cloud.ai.mcp.server;
 
 import com.alibaba.cloud.ai.mcp.server.service.TimeService;
+import org.springframework.ai.tool.ToolCallback;
 import org.springframework.ai.tool.ToolCallbackProvider;
+import org.springframework.ai.tool.definition.ToolDefinition;
 import org.springframework.ai.tool.method.MethodToolCallbackProvider;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
