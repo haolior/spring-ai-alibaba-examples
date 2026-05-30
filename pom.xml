@@ -63,9 +63,9 @@
 <!--		<module>spring-ai-alibaba-chat-example</module>-->
 <!--		<module>spring-ai-alibaba-prompt-example</module>-->
 <!--		<module>spring-ai-alibaba-structured-example</module>-->
-<!--			<module>spring-ai-alibaba-tool-calling-example</module>-->
-			<module>spring-ai-alibaba-mcp-example</module>
-<!--		<module>spring-ai-alibaba-rag-example</module>-->
+<!--		<module>spring-ai-alibaba-tool-calling-example</module>-->
+<!--		<module>spring-ai-alibaba-mcp-example</module>-->
+		<module>spring-ai-alibaba-rag-example</module>
 <!--		<module>spring-ai-alibaba-audio-example</module>-->
 <!--		<module>spring-ai-alibaba-video-example</module>-->
 <!--		<module>spring-ai-alibaba-agent-example</module>-->

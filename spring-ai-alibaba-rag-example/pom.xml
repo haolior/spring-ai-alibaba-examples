@@ -35,19 +35,21 @@
     <name>Spring AI Alibaba RAG Examples</name>
 
 	<modules>
-		<module>bailian-rag-knowledge</module>
-		<module>bailian-agent</module>
-		<module>rag-elasticsearch-example</module>
-		<module>rag-milvus-example</module>
-		<module>rag-pgvector-example</module>
-		<module>module-rag</module>
-        <module>spring-ai-alibaba-vector-databases-example</module>
-        <module>rag-etl-pipeline-example</module>
-        <module>rag-openai-dashscope-pgvector-example</module>
-        <module>rag-elasticsearch-autoconfigure-example</module>
-        <module>rag-component-example</module>
-        <module>langgraph-custom-rag-example</module>
-        <module>rag-parallel-example</module>
+                <module>spring-ai-alibaba-vector-databases-example</module>
+        <!--        <module>rag-component-example</module>-->
+
+<!--        <module>bailian-rag-knowledge</module>-->
+<!--		<module>bailian-agent</module>-->
+<!--		<module>rag-elasticsearch-example</module>-->
+<!--		<module>rag-milvus-example</module>-->
+<!--		<module>rag-pgvector-example</module>-->
+<!--		<module>module-rag</module>-->
+
+<!--        <module>rag-etl-pipeline-example</module>-->
+<!--        <module>rag-openai-dashscope-pgvector-example</module>-->
+<!--        <module>rag-elasticsearch-autoconfigure-example</module>-->
+<!--        <module>langgraph-custom-rag-example</module>-->
+<!--        <module>rag-parallel-example</module>-->
     </modules>
 
     <build>
