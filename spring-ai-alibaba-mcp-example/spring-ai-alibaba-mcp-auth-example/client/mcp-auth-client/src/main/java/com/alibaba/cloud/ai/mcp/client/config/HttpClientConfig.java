@@ -19,7 +19,7 @@ public class HttpClientConfig {
     public McpSyncHttpClientRequestCustomizer mcpAsyncHttpClientRequestCustomizer() {
         Map<String, String> headers = new HashMap<>();
         headers.put("token-1", "yingzi-1");
-        headers.put("token-2", "yingzi-2");
+//        headers.put("token-2", "yingzi-2");
 
         return new HeaderSyncHttpRequestCustomizer(headers);
     }
