@@ -1,7 +1,7 @@
 # Spring Ai Alibaba Rag Component Example
-This section will describe how to create example and call rag component.
+本节将介绍如何创建示例并调用 rag 组件。
 ## 模块说明
-This section will describe how to create example and call rag component.。
+本节将介绍如何创建示例并调用 rag 组件。
 ## 接口文档
 ### RagComponentController 接口
 

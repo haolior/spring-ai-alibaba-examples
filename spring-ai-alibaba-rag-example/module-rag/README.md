@@ -4,7 +4,7 @@
 
 Spring AI Module RAG: https://docs.spring.io/spring-ai/reference/api/retrieval-augmented-generation.html#modules
 
-Spring AI implements a Modular RAG architecture inspired by the concept of modularity detailed in the paper "Modular RAG: Transforming RAG Systems into LEGO-like Reconfigurable Frameworks".
+Spring AI 实现了一种模块化 RAG 架构，其灵感来源于论文“模块化 RAG：将 RAG 系统转换为类似乐高积木的可重构框架”中详述的模块化概念。
 
 ## 2. 组成部分
 

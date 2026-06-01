@@ -58,13 +58,13 @@ public class CloudRagService implements RagService {
 	private Resource springAiResource;
 
 	private static final String retrievalSystemTemplate = """
-			Context information is below.
+			上下文信息如下。
 			---------------------
 			{question_answer_context}
 			---------------------
-			Given the context and provided history information and not prior knowledge,
-			reply to the user comment. If the answer is not in the context, inform
-			the user that you can't answer the question.
+			根据上下文和提供的历史信息，而非先验知识，
+			回复用户评论。如果答案不在上下文中，请告知
+			用户您无法回答此问题。
 			""";
 
 	private final ChatClient chatClient;

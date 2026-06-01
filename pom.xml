@@ -61,7 +61,7 @@
 		<module>practice</module>
 <!--		<module>spring-ai-alibaba-helloworld</module>-->
 <!--		<module>spring-ai-alibaba-chat-example</module>-->
-		<module>spring-ai-alibaba-chat-memory-example</module>
+<!--		<module>spring-ai-alibaba-chat-memory-example</module>-->
 <!--		<module>spring-ai-alibaba-prompt-example</module>-->
 <!--		<module>spring-ai-alibaba-structured-example</module>-->
 <!--		<module>spring-ai-alibaba-tool-calling-example</module>-->

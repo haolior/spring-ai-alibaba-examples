@@ -1,5 +1,6 @@
 # Spring AI Alibaba Autoconfigure RAG Elasticsearch Example ###
-This section will describe how to create example and use autoconfigure rag component.
+本节将介绍如何创建示例并使用自动配置 rag 组件。
+
 ## 接口文档
 ### RagAutoConfigureController 接口
 
