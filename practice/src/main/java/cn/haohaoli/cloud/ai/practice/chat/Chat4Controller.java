@@ -1,8 +1,14 @@
 package cn.haohaoli.cloud.ai.practice.chat;
 
+import com.alibaba.cloud.ai.memory.jdbc.JdbcChatMemoryRepository;
+import com.alibaba.cloud.ai.memory.jdbc.PostgresChatMemoryRepository;
+import com.alibaba.cloud.ai.memory.redis.RedissonRedisChatMemoryRepository;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
+import org.springframework.ai.chat.client.advisor.SimpleLoggerAdvisor;
+import org.springframework.ai.chat.memory.ChatMemoryRepository;
+import org.springframework.ai.chat.memory.InMemoryChatMemoryRepository;
 import org.springframework.ai.chat.memory.MessageWindowChatMemory;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,24 +24,26 @@ import reactor.core.publisher.Flux;
 @RequestMapping("/chat")
 public class Chat4Controller {
 
+    private final static int MAX_MESSAGE = 100;
+
     private final ChatClient chatClient;
+    private final ChatMemoryRepository redisChatMemoryRepository;
+    private final ChatMemoryRepository inMemoryChatMemoryRepository;
+    private final ChatMemoryRepository jdbcChatMemoryRepository;
 
-    public Chat4Controller(ChatClient.Builder chatClientBuilder) {
-        // 1. 实例化“滑动窗口”记忆组件
-        // MessageWindowChatMemory 会在内存中开辟空间，并默认限制/滑动保留最近的 N 条消息，防止上下文撑爆
-        MessageWindowChatMemory chatMemory = MessageWindowChatMemory.builder()
-                .maxMessages(100)
-                .build();
+    public Chat4Controller(ChatClient.Builder chatClientBuilder,
+                           RedissonRedisChatMemoryRepository redisChatMemoryRepository,
+                           PostgresChatMemoryRepository postgresChatMemoryRepository) {
 
-        // 2. 将“记忆顾问 (MessageChatMemoryAdvisor)”作为默认切面注入 ChatClient
-        // Advisor 核心哲学：类似于 Spring AOP 的 Around 环绕通知。
-        // - 请求发出前：它会自动拦截请求，去 chatMemory 捞出该用户的历史对话拼入 Prompt
-        // - 大模型回复后：它会自动拦截响应，将 AI 的回复（Assistant 消息）存入 chatMemory 归档
         this.chatClient = chatClientBuilder
                 .defaultAdvisors(
-                        MessageChatMemoryAdvisor.builder(chatMemory).build()
+                        SimpleLoggerAdvisor.builder().build()
                 )
                 .build();
+        this.redisChatMemoryRepository = redisChatMemoryRepository;
+        this.jdbcChatMemoryRepository = postgresChatMemoryRepository;
+        this.inMemoryChatMemoryRepository = new InMemoryChatMemoryRepository();
+
     }
 
     /**
@@ -55,7 +63,6 @@ public class Chat4Controller {
             @RequestParam(value = "chatId", defaultValue = "default_session") String chatId,
             @RequestParam(value = "userQuery") String userQuery) {
 
-
         response.setCharacterEncoding("UTF-8");
 
         // 3. ⭐️ 核心暗号对接：利用 Lambda 向底层的 Advisor（拦截器）传递当前请求的上下文参数
@@ -65,6 +72,60 @@ public class Chat4Controller {
         // 作用 : 告诉底层的记忆顾问：“当前这次请求是专属 '${chatId}' 的，帮我捞取和存储历史记录时千万别认错人！”
         return chatClient.prompt()
                 .user(userQuery)
+                .advisors(
+                        MessageChatMemoryAdvisor.builder(
+                                MessageWindowChatMemory.builder()
+                                        .maxMessages(MAX_MESSAGE)
+                                        .chatMemoryRepository(inMemoryChatMemoryRepository)
+                                        .build()
+                        ).build()
+                )
+                .advisors(a -> a.param(MessageWindowChatMemory.CONVERSATION_ID, chatId))
+                .stream()
+                .content();
+    }
+
+    @GetMapping("/memory/redis")
+    public Flux<String> redisMemoryChat(
+            HttpServletResponse response,
+            @RequestParam(value = "chatId", defaultValue = "default_session") String chatId,
+            @RequestParam(value = "userQuery") String userQuery) {
+
+        response.setCharacterEncoding("UTF-8");
+
+        return chatClient.prompt()
+                .user(userQuery)
+                .advisors(
+                        MessageChatMemoryAdvisor.builder(
+                                MessageWindowChatMemory.builder()
+                                        .maxMessages(MAX_MESSAGE)
+                                        .chatMemoryRepository(redisChatMemoryRepository)
+                                        .build()
+                        ).build()
+                )
+                .advisors(a -> a.param(MessageWindowChatMemory.CONVERSATION_ID, chatId))
+                .stream()
+                .content();
+    }
+
+    @GetMapping("/memory/jdbc")
+    public Flux<String> jdbcMemoryChat(
+            HttpServletResponse response,
+            @RequestParam(value = "chatId", defaultValue = "default_session") String chatId,
+            @RequestParam(value = "userQuery") String userQuery) {
+
+        response.setCharacterEncoding("UTF-8");
+
+        return chatClient.prompt()
+                .user(userQuery)
+                .advisors(
+                        MessageChatMemoryAdvisor.builder(
+                                MessageWindowChatMemory.builder()
+                                        .maxMessages(MAX_MESSAGE)
+                                        .chatMemoryRepository(jdbcChatMemoryRepository)
+                                        .build()
+                        ).build()
+                )
                 .advisors(a -> a.param(MessageWindowChatMemory.CONVERSATION_ID, chatId))
                 .stream()
                 .content();
