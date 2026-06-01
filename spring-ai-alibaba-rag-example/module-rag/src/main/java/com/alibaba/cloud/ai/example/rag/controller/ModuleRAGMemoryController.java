@@ -19,6 +19,7 @@ package com.alibaba.cloud.ai.example.rag.controller;
 import org.springframework.ai.chat.client.ChatClient;
 
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
+import org.springframework.ai.chat.client.advisor.SimpleLoggerAdvisor;
 import org.springframework.ai.rag.advisor.RetrievalAugmentationAdvisor;
 import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.rag.retrieval.search.VectorStoreDocumentRetriever;
@@ -32,6 +33,7 @@ import org.springframework.web.bind.annotation.RestController;
 import static org.springframework.ai.chat.memory.ChatMemory.CONVERSATION_ID;
 
 /**
+ * 记忆持久化
  * @author yuluo
  * @author <a href="mailto:yuluo08290126@gmail.com">yuluo</a>
  *
@@ -51,12 +53,13 @@ public class ModuleRAGMemoryController {
 	public ModuleRAGMemoryController(ChatClient.Builder chatClientBuilder, ChatMemory chatMemory,
 			VectorStore vectorStore) {
 
-		this.chatClient = chatClientBuilder.build();
+		this.chatClient = chatClientBuilder
+				.defaultAdvisors(SimpleLoggerAdvisor.builder().build()).build();
 		this.chatMemoryAdvisor = MessageChatMemoryAdvisor.builder(chatMemory).build();
 
 		this.retrievalAugmentationAdvisor = RetrievalAugmentationAdvisor.builder()
 			.documentRetriever(
-					VectorStoreDocumentRetriever.builder().similarityThreshold(0.50).vectorStore(vectorStore).build())
+					VectorStoreDocumentRetriever.builder().similarityThreshold(0.3).vectorStore(vectorStore).build())
 			.build();
 	}
 
@@ -65,8 +68,7 @@ public class ModuleRAGMemoryController {
 
 		return chatClient.prompt()
 			.advisors(chatMemoryAdvisor, retrievalAugmentationAdvisor)
-			.advisors(advisors -> advisors.param(CONVERSATION_ID,
-					conversationId))
+			.advisors(advisors -> advisors.param(CONVERSATION_ID, conversationId))
 			.user(prompt)
 			.call()
 			.content();

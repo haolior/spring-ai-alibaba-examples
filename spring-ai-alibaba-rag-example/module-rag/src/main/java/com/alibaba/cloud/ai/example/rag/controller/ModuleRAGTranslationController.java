@@ -17,6 +17,7 @@
 package com.alibaba.cloud.ai.example.rag.controller;
 
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.client.advisor.SimpleLoggerAdvisor;
 import org.springframework.ai.rag.advisor.RetrievalAugmentationAdvisor;
 import org.springframework.ai.rag.preretrieval.query.transformation.TranslationQueryTransformer;
 import org.springframework.ai.rag.retrieval.search.VectorStoreDocumentRetriever;
@@ -27,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
+ * 跨语言检索
  * @author yuluo
  * @author <a href="mailto:yuluo08290126@gmail.com">yuluo</a>
  *
@@ -43,16 +45,17 @@ public class ModuleRAGTranslationController {
 	private final RetrievalAugmentationAdvisor retrievalAugmentationAdvisor;
 
 	public ModuleRAGTranslationController(ChatClient.Builder chatClientBuilder, VectorStore vectorStore) {
-		this.chatClient = chatClientBuilder.build();
+		this.chatClient = chatClientBuilder
+				.defaultAdvisors(SimpleLoggerAdvisor.builder().build()).build();
 
 		var documentRetriever = VectorStoreDocumentRetriever.builder()
 			.vectorStore(vectorStore)
-			.similarityThreshold(0.50)
+			.similarityThreshold(0.3)
 			.build();
 
 		var queryTransformer = TranslationQueryTransformer.builder()
 			.chatClientBuilder(chatClientBuilder.build().mutate())
-			.targetLanguage("english")
+			.targetLanguage("chinese")
 			.build();
 
 		this.retrievalAugmentationAdvisor = RetrievalAugmentationAdvisor.builder()

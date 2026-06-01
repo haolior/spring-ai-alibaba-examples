@@ -17,6 +17,7 @@
 package com.alibaba.cloud.ai.example.rag.controller;
 
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.client.advisor.SimpleLoggerAdvisor;
 import org.springframework.ai.rag.advisor.RetrievalAugmentationAdvisor;
 import org.springframework.ai.rag.preretrieval.query.transformation.RewriteQueryTransformer;
 import org.springframework.ai.rag.retrieval.search.VectorStoreDocumentRetriever;
@@ -27,6 +28,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
+ * 问题重写与美化
+ * 把用户乱七八糟的长句、口语，精简成标准的搜索关键词。
  * @author yuluo
  * @author <a href="mailto:yuluo08290126@gmail.com">yuluo</a>
  *
@@ -44,11 +47,12 @@ public class ModuleRAGRewriteController {
 
 	public ModuleRAGRewriteController(ChatClient.Builder chatClientBuilder, VectorStore vectorStore) {
 
-		this.chatClient = chatClientBuilder.build();
+		this.chatClient = chatClientBuilder
+				.defaultAdvisors(SimpleLoggerAdvisor.builder().build()).build();
 
 		var documentRetriever = VectorStoreDocumentRetriever.builder()
 			.vectorStore(vectorStore)
-			.similarityThreshold(0.50)
+			.similarityThreshold(0.3)
 			.build();
 
 		var queryTransformer = RewriteQueryTransformer.builder()

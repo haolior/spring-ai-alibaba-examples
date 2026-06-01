@@ -1,17 +1,30 @@
 # ModuleRAGTranslationController类的rag方法
 POST http://localhost:10014/module-rag/rag/translation
+Content-Type: application/json
+
+Who is Lucio?
 
 ###
 # ModuleRAGRewriteController类的rag方法
 POST http://localhost:10014/module-rag/rag/rewrite
+Content-Type: application/json
+
+我想了解一下关于Lucio和那个叫Balosso的人在清晨一大早出发时候的具体天气情况
 
 ###
 # ModuleRAGCompressionController类的rag方法
-POST http://localhost:10014/module-rag/rag/compression/{chatId}
+POST http://localhost:10014/module-rag/rag/compression/112
+Content-Type: application/json
+
+他的愿望是什么
 
 ###
 # ModuleRAGMemoryController类的chatWithDocument方法
-POST http://localhost:10014/module-rag/rag/memory/{chatId}
+POST http://localhost:10014/module-rag/rag/memory/111
+Content-Type: application/json
+
+Lucio是谁
+他的愿望是什么
 
 ###
 # ModuleRAGBasicController类的chatWithDocument方法

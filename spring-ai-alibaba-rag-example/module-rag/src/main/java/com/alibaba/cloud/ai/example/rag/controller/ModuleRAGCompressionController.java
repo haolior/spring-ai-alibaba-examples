@@ -19,6 +19,7 @@ package com.alibaba.cloud.ai.example.rag.controller;
 import org.springframework.ai.chat.client.ChatClient;
 
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
+import org.springframework.ai.chat.client.advisor.SimpleLoggerAdvisor;
 import org.springframework.ai.rag.advisor.RetrievalAugmentationAdvisor;
 import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.rag.preretrieval.query.transformation.CompressionQueryTransformer;
@@ -33,6 +34,7 @@ import org.springframework.web.bind.annotation.RestController;
 import static org.springframework.ai.chat.memory.ChatMemory.CONVERSATION_ID;
 
 /**
+ * 历史上下文压缩
  * @author yuluo
  * @author <a href="mailto:yuluo08290126@gmail.com">yuluo</a>
  *
@@ -53,13 +55,14 @@ public class ModuleRAGCompressionController {
 	public ModuleRAGCompressionController(ChatClient.Builder chatClientBuilder, ChatMemory chatMemory,
 			VectorStore vectorStore) {
 
-		this.chatClient = chatClientBuilder.build();
+		this.chatClient = chatClientBuilder
+				.defaultAdvisors(SimpleLoggerAdvisor.builder().build()).build();
 
 		this.chatMemoryAdvisor = MessageChatMemoryAdvisor.builder(chatMemory).build();
 
 		var documentRetriever = VectorStoreDocumentRetriever.builder()
 			.vectorStore(vectorStore)
-			.similarityThreshold(0.50)
+			.similarityThreshold(0.30)
 			.build();
 
 		var queryTransformer = CompressionQueryTransformer.builder()
