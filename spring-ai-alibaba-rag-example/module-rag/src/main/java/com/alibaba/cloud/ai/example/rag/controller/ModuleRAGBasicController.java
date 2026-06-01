@@ -17,9 +17,11 @@
 package com.alibaba.cloud.ai.example.rag.controller;
 
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.client.advisor.SimpleLoggerAdvisor;
 import org.springframework.ai.rag.advisor.RetrievalAugmentationAdvisor;
 import org.springframework.ai.rag.retrieval.search.VectorStoreDocumentRetriever;
 import org.springframework.ai.vectorstore.VectorStore;
+import org.springframework.ai.vectorstore.elasticsearch.ElasticsearchVectorStore;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -38,9 +40,10 @@ public class ModuleRAGBasicController {
 
 	private final RetrievalAugmentationAdvisor retrievalAugmentationAdvisor;
 
-	public ModuleRAGBasicController(ChatClient.Builder chatClientBuilder, VectorStore vectorStore) {
+	public ModuleRAGBasicController(ChatClient.Builder chatClientBuilder, ElasticsearchVectorStore vectorStore) {
 
-		this.chatClient = chatClientBuilder.build();
+		this.chatClient = chatClientBuilder
+				.defaultAdvisors(SimpleLoggerAdvisor.builder().build()).build();
 		this.retrievalAugmentationAdvisor = RetrievalAugmentationAdvisor.builder()
 			.documentRetriever(
 					VectorStoreDocumentRetriever.builder().similarityThreshold(0.50).vectorStore(vectorStore).build())

@@ -37,13 +37,14 @@
 	<modules>
 
 <!--        向量数据库基础： 脱离大模型，演示如何单独对各种向量数据库进行连接、数据的 CRUD 以及最基础的相似度检索（Similarity Search）。-->
-    <module>spring-ai-alibaba-vector-databases-example</module>
+<!--    <module>spring-ai-alibaba-vector-databases-example</module>-->
 
+
+        <!--        模块化 RAG： 可能是对 RAG 核心逻辑的封装抽象，或者是一个标准的、可复用的 RAG 业务模块。-->
+        <module>module-rag</module>
 
 <!--        RAG 基础组件： 演示 RAG 的核心四大件（DocumentReader、Splitter、Embedding、VectorStore）如何原生组装。-->
-        <module>rag-component-example</module>
-<!--        模块化 RAG： 可能是对 RAG 核心逻辑的封装抽象，或者是一个标准的、可复用的 RAG 业务模块。-->
-        <module>module-rag</module>
+<!--        <module>rag-component-example</module>-->
 
 
 

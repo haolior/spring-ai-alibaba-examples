@@ -15,4 +15,4 @@ POST http://localhost:10014/module-rag/rag/memory/{chatId}
 
 ###
 # ModuleRAGBasicController类的chatWithDocument方法
-GET http://localhost:10014/module-rag/rag/basic
+GET http://localhost:10014/module-rag/rag/basic?prompt=驯鹿教了他们什么

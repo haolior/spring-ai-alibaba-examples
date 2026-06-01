@@ -98,10 +98,28 @@ public class VectorDBInit {
 				.build());
 		documents.addAll(markdownReader2.get());
 
-		logger.info("Creating and storing Embeddings from Documents");
-
 		createIndexIfNotExists();
-		vectorStore.add(new TokenTextSplitter().split(documents));
+
+		// 1. 把读取到的所有文档放到一个大 List 里（当前是 13 条）
+		List<Document> allDocuments = new TokenTextSplitter().split(documents);
+
+		// https://help.aliyun.com/zh/model-studio/embedding?spm=a2c4g.11186623.0.0.3c722bafTkXkzg#ee47f9d186aa2
+
+		// 2. 既然框架没有批量方法，我们手动 10 条一组分批调用 add()
+		int batchSize = 10; // 阿里百炼 text-embedding-v4 的硬性上限
+		for (int i = 0; i < allDocuments.size(); i += batchSize) {
+			// 动态计算结束索引，防止越界
+			int end = Math.min(i + batchSize, allDocuments.size());
+			List<Document> batch = allDocuments.subList(i, end);
+
+			logger.info("👉 [测试日志] 正在安全提交第 {} 到 {} 条数据，本批次数量: {}", i, end, batch.size());
+
+			// 此时每次传进去的 List 长度都 <= 10，百炼绝对不会再报 HTTP 400
+			vectorStore.add(batch);
+		}
+
+		logger.info("👉 [测试日志] 所有文档分批导入成功！");
+
 	}
 
 	private void createIndexIfNotExists() {
