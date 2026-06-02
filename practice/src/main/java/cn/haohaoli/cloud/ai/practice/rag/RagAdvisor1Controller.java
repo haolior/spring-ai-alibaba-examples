@@ -1,19 +1,19 @@
 package cn.haohaoli.cloud.ai.practice.rag;
 
 
+import com.alibaba.cloud.ai.memory.redis.RedissonRedisChatMemoryRepository;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
 import org.springframework.ai.chat.client.advisor.SimpleLoggerAdvisor;
 import org.springframework.ai.chat.client.advisor.vectorstore.QuestionAnswerAdvisor;
+import org.springframework.ai.chat.memory.MessageWindowChatMemory;
 import org.springframework.ai.chat.prompt.PromptTemplate;
 import org.springframework.ai.document.Document;
-import org.springframework.ai.template.st.StTemplateRenderer;
 import org.springframework.ai.vectorstore.SearchRequest;
 import org.springframework.ai.vectorstore.redis.RedisVectorStore;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -26,7 +26,7 @@ import java.util.List;
  * @author lwh
  */
 @RestController
-@RequestMapping("/rag/vector")
+@RequestMapping("/rag/advisor")
 public class RagAdvisor1Controller {
 
     private static final Logger log = LoggerFactory.getLogger(RagAdvisor1Controller.class);
@@ -35,26 +35,28 @@ public class RagAdvisor1Controller {
 
     private final ChatClient chatClient;
 
-    public RagAdvisor1Controller(ChatClient.Builder builder, RedisVectorStore vectorStore) {
+    public RagAdvisor1Controller(ChatClient.Builder builder,
+                                 RedisVectorStore vectorStore,
+                                 RedissonRedisChatMemoryRepository chatMemoryRepository) {
         this.vectorStore = vectorStore;
         PromptTemplate promptTemplate = PromptTemplate.builder()
                 .template(
                         """
-                        {query}
-                        
-                        上下文信息如下。
-                        
-                        ---------------------
-                        {question_answer_context}
-                        ---------------------
-                        
-                        根据上下文信息，在没有先验知识的情况下回答问题。
-                        
-                        请遵循以下规则：
-                        
-                        1. 如果答案不在上下文中，请直接说不知道。
-                        2. 避免使用“根据上下文……”或“根据提供的信息……”之类的表述。
-                        """)
+                                {query}
+                                
+                                上下文信息如下。
+                                
+                                ---------------------
+                                {question_answer_context}
+                                ---------------------
+                                
+                                根据上下文信息，在没有先验知识的情况下回答问题。
+                                
+                                请遵循以下规则：
+                                
+                                1. 如果答案不在上下文中，请直接说不知道。
+                                2. 避免使用“根据上下文...”或“根据提供的信息...”之类的表述。
+                                """)
                 .build();
 
         this.chatClient =
@@ -64,8 +66,18 @@ public class RagAdvisor1Controller {
                                         .builder(vectorStore)
                                         .searchRequest(SearchRequest.builder().build())
                                         .promptTemplate(promptTemplate)
-                                        .build(),
-                                SimpleLoggerAdvisor.builder().build())
+                                        .build()
+                        )
+                        .defaultAdvisors(
+                                SimpleLoggerAdvisor
+                                        .builder()
+                                        .build()
+                        )
+                        .defaultAdvisors(
+                                MessageChatMemoryAdvisor
+                                        .builder(MessageWindowChatMemory.builder().chatMemoryRepository(chatMemoryRepository).build())
+                                        .build()
+                        )
                         .build();
 
     }
@@ -103,11 +115,14 @@ public class RagAdvisor1Controller {
     }
 
     @GetMapping("/chat")
-    public Flux<String> search(HttpServletResponse response, @RequestParam String query) {
+    public Flux<String> search(HttpServletResponse response,
+                               @RequestParam String query,
+                               @RequestParam(value = "chatId", defaultValue = "default_session") String chatId) {
         response.setCharacterEncoding("UTF-8");
 
         return chatClient.prompt()
                 .user(query)
+                .advisors(a -> a.param(MessageWindowChatMemory.CONVERSATION_ID, chatId))
                 .stream()
                 .content();
     }
