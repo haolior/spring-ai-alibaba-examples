@@ -35,11 +35,14 @@ public class RagAdvisor1Controller {
 
     private final ChatClient chatClient;
 
+    private final MessageChatMemoryAdvisor messageChatMemoryAdvisor;
+    private final PromptTemplate promptTemplate;
+
     public RagAdvisor1Controller(ChatClient.Builder builder,
                                  RedisVectorStore vectorStore,
                                  RedissonRedisChatMemoryRepository chatMemoryRepository) {
         this.vectorStore = vectorStore;
-        PromptTemplate promptTemplate = PromptTemplate.builder()
+        promptTemplate = PromptTemplate.builder()
                 .template(
                         """
                                 {query}
@@ -58,27 +61,12 @@ public class RagAdvisor1Controller {
                                 2. 避免使用“根据上下文...”或“根据提供的信息...”之类的表述。
                                 """)
                 .build();
-
-        this.chatClient =
-                builder.defaultSystem("你是一个友好且知识渊博的AI助手。基于提供的上下文信息来回答问题，如果上下文中没有相关信息，请明确告知用户。")
-                        .defaultAdvisors(
-                                QuestionAnswerAdvisor
-                                        .builder(vectorStore)
-                                        .searchRequest(SearchRequest.builder().build())
-                                        .promptTemplate(promptTemplate)
-                                        .build()
-                        )
-                        .defaultAdvisors(
-                                SimpleLoggerAdvisor
-                                        .builder()
-                                        .build()
-                        )
-                        .defaultAdvisors(
-                                MessageChatMemoryAdvisor
-                                        .builder(MessageWindowChatMemory.builder().chatMemoryRepository(chatMemoryRepository).build())
-                                        .build()
-                        )
-                        .build();
+        this.chatClient = builder.defaultAdvisors(SimpleLoggerAdvisor.builder().build()).build();
+        this.messageChatMemoryAdvisor = MessageChatMemoryAdvisor
+                .builder(
+                        MessageWindowChatMemory.builder().chatMemoryRepository(chatMemoryRepository).build()
+                )
+                .build();
 
     }
 
@@ -114,7 +102,7 @@ public class RagAdvisor1Controller {
         log.info("Vector data initialized");
     }
 
-    @GetMapping("/chat")
+    @GetMapping("/simple/chat")
     public Flux<String> search(HttpServletResponse response,
                                @RequestParam String query,
                                @RequestParam(value = "chatId", defaultValue = "default_session") String chatId) {
@@ -122,6 +110,15 @@ public class RagAdvisor1Controller {
 
         return chatClient.prompt()
                 .user(query)
+                .system("你是一个友好且知识渊博的AI助手。基于提供的上下文信息来回答问题，如果上下文中没有相关信息，请明确告知用户。")
+                .advisors(messageChatMemoryAdvisor)
+                .advisors(
+                        QuestionAnswerAdvisor
+                                .builder(vectorStore)
+                                .searchRequest(SearchRequest.builder().build())
+                                .promptTemplate(promptTemplate)
+                                .build()
+                )
                 .advisors(a -> a.param(MessageWindowChatMemory.CONVERSATION_ID, chatId))
                 .stream()
                 .content();
