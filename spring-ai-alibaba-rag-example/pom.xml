@@ -41,7 +41,7 @@
 
 
         <!--        模块化 RAG： 可能是对 RAG 核心逻辑的封装抽象，或者是一个标准的、可复用的 RAG 业务模块。-->
-        <module>module-rag</module>
+<!--        <module>module-rag</module>-->
 
 <!--        RAG 基础组件： 演示 RAG 的核心四大件（DocumentReader、Splitter、Embedding、VectorStore）如何原生组装。-->
 <!--        <module>rag-component-example</module>-->
@@ -49,11 +49,11 @@
 
 
 <!--        Pgvector 向量检索： 使用 PostgreSQL 的扩展 pgvector 实现 RAG。-->
-<!--		<module>rag-pgvector-example</module>-->
+		<module>rag-pgvector-example</module>
 <!--        ES 向量检索： 使用 Elasticsearch 作为向量数据库实现 RAG。-->
-<!--        <module>rag-elasticsearch-example</module>-->
+        <module>rag-elasticsearch-example</module>
 <!--        Milvus 向量检索： 使用专为海量向量设计的 Milvus 数据库实现 RAG。-->
-<!--        <module>rag-milvus-example</module>-->
+        <module>rag-milvus-example</module>
 
 
 

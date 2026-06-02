@@ -29,6 +29,9 @@ spring:
       embedding:
         options:
           model: text-embedding-v4
+      rerank:
+        options:
+          model: qwen3-rerank
     memory:
       redis:
         enabled: true
