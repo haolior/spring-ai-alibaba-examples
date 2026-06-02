@@ -6,7 +6,9 @@ spring:
     dashscope:
       api-key: ${AI_DASHSCOPE_API_KEY}
       # workspace-id: ${AI_DASHSCOPE_WORKSPACE_ID}
-
+      rerank:
+        options:
+          model:
     vectorstore:
       elasticsearch:
         index-name: spring-ai-alibaba-index

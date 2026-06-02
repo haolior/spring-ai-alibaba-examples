@@ -2,6 +2,8 @@ server:
   port: 8080
 
 spring:
+  main:
+    allow-bean-definition-overriding: true
   application:
     name: practice
   datasource:
@@ -38,11 +40,11 @@ spring:
       postgresql:
         initialize-schema: true
         enabled: true
-
     vectorstore:
+      type: redis
       redis:
         index-name: test-index
-        prefix: "test-prefix:"
+        prefix: "vector_store:"
         initialize-schema: true
 
 #    openai:
