@@ -1,6 +1,7 @@
 package cn.haohaoli.cloud.ai.practice.rag;
 
 
+import org.apache.commons.collections4.ListUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.document.Document;
@@ -18,8 +19,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -34,9 +33,33 @@ public class RagETL3Controller {
 
     private static final String SOURCE_FILE = "sample-large-cn.md";
 
+    private static final String SOURCE_ID = "sample_large_cn_md";
+
+    private static final int EMBEDDING_BATCH_SIZE = 10;
+
+    private final List<Document> documents;
+
     private final RedisVectorStore vectorStore;
 
     public RagETL3Controller(RedisVectorStore vectorStore) {
+        DocumentReader reader = new MarkdownDocumentReader(
+                new ClassPathResource("data/sample-large-cn.md"),
+                MarkdownDocumentReaderConfig.defaultConfig()
+        );
+
+        TokenTextSplitter splitter = TokenTextSplitter.builder()
+                .withChunkSize(800)
+                .withMinChunkSizeChars(350)
+                .withMinChunkLengthToEmbed(5)
+                .withMaxNumChunks(10000)
+                .withKeepSeparator(true)
+                .build();
+        this.documents = splitter.apply(reader.read());
+        for (Document document : documents) {
+            Map<String, Object> metadata = document.getMetadata();
+            metadata.put("source_id", SOURCE_ID);
+            metadata.put("source_file", SOURCE_FILE);
+        }
         this.vectorStore = vectorStore;
     }
 
@@ -47,7 +70,7 @@ public class RagETL3Controller {
      */
     @GetMapping("/preview")
     public List<Document> preview() {
-        return buildDocuments().stream()
+        return documents.stream()
                 .limit(3)
                 .toList();
     }
@@ -58,11 +81,12 @@ public class RagETL3Controller {
      * vectorStore.add() 会自动调用 EmbeddingModel，把每个 Document.text 转成向量后写入 Redis。
      */
     @GetMapping("/import")
-    public ImportResult importData() {
-        List<Document> documents = buildDocuments();
-        vectorStore.add(documents);
+    public int importData() {
+        for (List<Document> documentList : ListUtils.partition(documents, EMBEDDING_BATCH_SIZE)) {
+            vectorStore.add(documentList);
+        }
         log.info("RAG ETL Writer 导入完成，sourceFile={}, count={}", SOURCE_FILE, documents.size());
-        return new ImportResult(SOURCE_FILE, documents.size());
+        return documents.size();
     }
 
     /**
@@ -72,7 +96,7 @@ public class RagETL3Controller {
     public List<Document> search(@RequestParam String query,
                                  @RequestParam(defaultValue = "3") int topK) {
         FilterExpressionBuilder builder = new FilterExpressionBuilder();
-        Filter.Expression expression = builder.eq("source_file", SOURCE_FILE).build();
+        Filter.Expression expression = builder.eq("source_id", SOURCE_ID).build();
 
         return vectorStore.similaritySearch(SearchRequest.builder()
                 .query(query)
@@ -81,44 +105,5 @@ public class RagETL3Controller {
                 .build());
     }
 
-    private List<Document> buildDocuments() {
-        List<Document> splitDocuments = splitDocuments(readDocuments());
-        List<Document> result = new ArrayList<>(splitDocuments.size());
-
-        for (int i = 0; i < splitDocuments.size(); i++) {
-            Document document = splitDocuments.get(i);
-            Map<String, Object> metadata = new HashMap<>(document.getMetadata());
-            metadata.put("source_file", SOURCE_FILE);
-            metadata.put("etl_stage", "writer");
-            metadata.put("chunk_no", i);
-
-            // 使用稳定 ID，重复调用 import 时会覆盖同一批数据，避免 Redis 中不断堆重复 chunk。
-            result.add(new Document("etl-" + SOURCE_FILE + "-" + i, document.getText(), metadata));
-        }
-
-        return result;
-    }
-
-    private List<Document> readDocuments() {
-        DocumentReader reader = new MarkdownDocumentReader(
-                new ClassPathResource("data/" + SOURCE_FILE),
-                MarkdownDocumentReaderConfig.defaultConfig()
-        );
-        return reader.read();
-    }
-
-    private List<Document> splitDocuments(List<Document> documents) {
-        TokenTextSplitter splitter = TokenTextSplitter.builder()
-                .withChunkSize(800)
-                .withMinChunkSizeChars(350)
-                .withMinChunkLengthToEmbed(5)
-                .withMaxNumChunks(10000)
-                .withKeepSeparator(true)
-                .build();
-        return splitter.apply(documents);
-    }
-
-    public record ImportResult(String sourceFile, int documentCount) {
-    }
 
 }
