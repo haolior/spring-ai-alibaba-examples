@@ -1,0 +1,117 @@
+Spring AI TextReader 功能测试文档
+=====================================
+
+【文档信息】
+创建时间：2026-06-12
+文档版本：v1.0.0
+作者：测试工程师
+用途：验证 Spring AI TextReader 读取功能
+
+【第一部分：基础内容测试】
+
+1.1 中文段落测试
+
+Spring AI 是 Spring 生态系统中用于构建人工智能应用程序的强大框架。它提供了统一的 API 接口，使得开发者能够轻松集成各种 AI 模型和服务。TextReader 作为文档读取组件，能够从多种来源（文件系统、类路径、URL等）读取文本内容，并将其转换为 Document 对象。
+
+1.2 英文段落测试
+
+Spring AI TextReader is a powerful tool for reading documents from various sources. It supports automatic metadata extraction, custom metadata injection, and can handle different character encodings. The read() method returns a list of Document objects, each containing the text content and associated metadata.
+
+1.3 数字与符号测试
+
+数字序列：0123456789
+小数：3.14159, 2.71828, 99.99%
+特殊符号：!@#$%^&*()_+-=[]{}|;:'",.<>?/~
+换行符测试：第一行\n第二行\r\n第三行
+
+【第二部分：元数据测试】
+
+以下是需要被提取的元数据信息：
+
+- 文件路径：classpath:data/test-document.txt
+- 字符编码：UTF-8
+- 文件大小：约 2KB
+- 行数统计：50行
+
+【第三部分：结构化内容测试】
+
+3.1 列表数据
+
+用户名          邮箱                注册日期
+--------------------------------------------------
+张三          zhangsan@test.com    2024-01-15
+李四          lisi@test.com        2024-02-20
+王五          wangwu@test.com      2024-03-10
+赵六          zhaoliu@test.com     2024-04-05
+
+3.2 JSON 格式测试
+
+{
+  "name": "测试文档",
+  "version": "1.0",
+  "config": {
+    "charset": "UTF-8",
+    "autoDetectMetadata": true
+  },
+  "tags": ["test", "spring-ai", "textreader"]
+}
+
+3.3 XML 格式测试
+
+<document>
+  <metadata>
+    <author>测试团队</author>
+    <timestamp>2026-06-12T10:30:00Z</timestamp>
+  </metadata>
+  <content>这是 XML 格式的测试内容</content>
+</document>
+
+【第四部分：边界情况测试】
+
+4.1 空行测试
+
+第1段内容
+
+（这里有一个空行）
+
+第2段内容
+
+4.2 重复字符测试
+
+AAAAAAAAAABBBBBBBBBBCCCCCCCCCC
+abcdefghijklmnopqrstuvwxyz
+
+4.3 超长文本测试
+
+这是一个用于测试文本读取器对长字符串处理能力的示例句子。Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 本段文字旨在测试当单个段落长度较长时，TextReader 是否能够正确处理，不会出现截断或乱码的情况。重复测试内容：Spring AI TextReader 功能强大且易于使用，推荐在实际项目中应用。
+
+4.4 Unicode 字符测试
+
+中文：你好，世界！
+日文：こんにちは、世界！
+韩文：안녕하세요, 세계!
+Emoji：😀 😃 😄 😁 😆 😅 🤣
+数学符号：∑ ∏ ∫ √ ∞ ≠ ≤ ≥
+货币符号：$ € £ ¥ ₹
+
+【第五部分：性能测试数据】
+
+需要处理的文档数量：1000
+预期处理时间：< 5秒
+内存占用预期：< 200MB
+并发线程数：10
+
+【测试总结】
+
+经过上述各个维度的测试，可以验证 Spring AI TextReader 具备以下能力：
+
+✓ 正确读取中文、英文及多语言内容
+✓ 准确识别和提取元数据
+✓ 正确处理各种特殊字符和符号
+✓ 支持多种字符编码格式
+✓ 稳定处理边界情况和异常输入
+
+测试完成时间：2026-06-12
+测试状态：通过
+
+===== 文档结束 =====
