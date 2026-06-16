@@ -29,7 +29,6 @@ public class RagVector2Controller {
     private static final Logger log = LoggerFactory.getLogger(RagVector2Controller.class);
 
     @Autowired
-    @Lazy
     private RedisVectorStore vectorStore;
 
     @GetMapping("/add")
