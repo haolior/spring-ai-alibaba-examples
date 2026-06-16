@@ -10,9 +10,11 @@ import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
 import org.springframework.ai.chat.client.advisor.SimpleLoggerAdvisor;
 import org.springframework.ai.chat.memory.MessageWindowChatMemory;
+import org.springframework.ai.chat.prompt.PromptTemplate;
 import org.springframework.ai.document.Document;
 import org.springframework.ai.document.DocumentReader;
 import org.springframework.ai.rag.advisor.RetrievalAugmentationAdvisor;
+import org.springframework.ai.rag.generation.augmentation.ContextualQueryAugmenter;
 import org.springframework.ai.rag.retrieval.search.VectorStoreDocumentRetriever;
 import org.springframework.ai.reader.markdown.MarkdownDocumentReader;
 import org.springframework.ai.reader.markdown.config.MarkdownDocumentReaderConfig;
@@ -137,6 +139,37 @@ public class RagSimpleController {
     public Flux<String> chat(HttpServletResponse response, @RequestParam String query,
                              @RequestParam(value = "chatId", defaultValue = "default_session") String chatId) {
         response.setCharacterEncoding("UTF-8");
+        PromptTemplate contextualPromptTemplate = PromptTemplate.builder()
+                .template(
+                        """
+                                下面是与你的问题相关的知识库上下文。
+
+                                ---------------------
+                                {context}
+                                ---------------------
+
+                                请在不使用任何外部知识的前提下，仅依据上述上下文回答问题。
+
+                                请遵循以下规则：
+                                1. 如果答案不在上下文中，请直接说不知道。
+                                2. 不要补充、猜测或改写上下文中没有明确说明的规则、条件、原因或结论。
+                                3. 回答要直接、简洁、自然，不要出现“根据上下文...”或“根据提供的信息...”之类的表述。
+
+                                问题：{query}
+
+                                回答：
+                                """
+                )
+                .build();
+        PromptTemplate emptyContextPromptTemplate = PromptTemplate.builder()
+                .template(
+                        """
+                                当前没有检索到与你问题相关的知识库内容。
+
+                                请直接回答：不知道。
+                                """
+                )
+                .build();
         return chatClient.prompt()
                 .user(query)
                 .advisors(messageChatMemoryAdvisor)
@@ -148,9 +181,16 @@ public class RagSimpleController {
                                         .topK(2)
                                         .filterExpression(new FilterExpressionBuilder().eq("source_id", SOURCE_ID).build())
                                         .build()
-                        ).build()
+                        )
+                        .queryAugmenter(
+                                ContextualQueryAugmenter.builder()
+                                        .promptTemplate(contextualPromptTemplate)
+                                        .emptyContextPromptTemplate(emptyContextPromptTemplate)
+                                        .allowEmptyContext(false)
+                                        .build()
+                        )
+                        .build()
                 )
-
                 .system(
                         """
                                 你是一个严谨的售后客服知识库助手。
