@@ -44,11 +44,20 @@ spring:
         initialize-schema: true
         enabled: true
     vectorstore:
-      type: redis
       redis:
         index-name: test-index
         prefix: "vector_store:"
-        initialize-schema: false
+        algorithm: HSNW
+        metadata-fields:
+          - name: source_id
+            type: TAG
+          - name: source_file
+            type: TAG
+          - name: category
+            type: TAG
+          - name: title
+            type: TEXT
+        initialize-schema: true
 
 #    openai:
 #      api-key: ${AI_DASHSCOPE_API_KEY}
