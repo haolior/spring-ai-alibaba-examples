@@ -7,6 +7,7 @@ import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.model.ToolContext;
 import org.springframework.ai.tool.ToolCallback;
 import org.springframework.ai.tool.function.FunctionToolCallback;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -75,7 +76,7 @@ public class AgentController1 {
      * <p>和 {@link #call(String)} 的区别：
      * {@code call} 更适合只关心最终文本；{@code invoke} 更适合观察 Agent 执行状态。
      */
-    @GetMapping("/invoke")
+    @GetMapping(value = "/invoke", produces = MediaType.APPLICATION_JSON_VALUE)
     public String invoke(@RequestParam(value = "userQuery", defaultValue = "杭州天气怎么样？", required = false) String userQuery) throws GraphRunnerException {
         Optional<OverAllState> invoke = reactAgent.invoke(userQuery);
         return invoke.map(OverAllState::toString).orElse(null);
