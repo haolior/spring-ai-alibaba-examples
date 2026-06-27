@@ -1,6 +1,49 @@
-# AgentController类的invoke方法
-GET http://localhost:8080/invoke
+# React Agent 人工审批示例接口
+# 前置条件：
+# 1. 已启动 react-agent-example，默认端口为 8080。
+# 2. 已配置 AI_DASHSCOPE_API_KEY 环境变量。
+# 3. 本示例重点演示 file_write 工具的人工审批流程，因此 query 要明确要求写文件。
+
+### 1. 发起 Agent 调用
+# 说明：
+# - query：用户任务。这里要求创建文件，用于触发 file_write 工具。
+# - threadId：会话 ID。后续 /feedback 必须使用同一个 threadId，才能恢复这次被中断的执行。
+# 预期结果：
+# - 返回 file_write 的待审批信息，文件此时还不会真正写入。
+GET http://localhost:8080/invoke?query=请使用file_write工具创建hello.txt文件，内容是hello agent&threadId=react-demo-1
 
 ###
-# AgentController类的feedback方法
-POST http://localhost:8080/feedback
+# 2. 批准工具调用
+# 说明：
+# - isApproved=true 表示允许执行上一步返回的 file_write 工具调用。
+# - threadId 必须和 /invoke 使用的 threadId 一致。
+# 预期结果：
+# - 返回“执行成功”。
+# - 项目运行目录下会生成 hello.txt，内容为 hello agent。
+POST http://localhost:8080/feedback?threadId=react-demo-1
+Content-Type: application/json
+
+[
+  {
+    "isApproved": true,
+    "feedback": ""
+  }
+]
+
+###
+# 3. 拒绝工具调用
+# 说明：
+# - 如需测试拒绝流程，先重新执行第 1 个请求，并换一个新的 threadId。
+# - isApproved=false 时，feedback 用于说明拒绝原因。
+# 预期结果：
+# - 返回“执行成功”。
+# - Agent 会收到拒绝原因，不会按原计划执行 file_write。
+POST http://localhost:8080/feedback?threadId=react-demo-2
+Content-Type: application/json
+
+[
+  {
+    "isApproved": false,
+    "feedback": "不允许写入本地文件"
+  }
+]

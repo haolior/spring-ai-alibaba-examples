@@ -1,22 +1,27 @@
 server:
-  port: 8080
-
+  port: 8765
+  servlet:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
 spring:
   main:
     allow-bean-definition-overriding: true
   application:
     name: practice
   datasource:
-    url: jdbc:postgresql://192.168.10.108:5432/ai
-    username: user_YPkESJ
-    password: password_hpFWHH
+    url: jdbc:mysql://192.168.7.24:3306/ai_practice?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true
+    username: root
+    password: FmArM46TviIeoL
+    driver-class-name: com.mysql.cj.jdbc.Driver
   data:
     redis:
-      host: 192.168.10.108
+      host: 192.168.7.24
       database: 9
-      password: redis-stack
+      password: redis8899
       client-type: jedis
-      port: 6389
+      port: 6379
   ai:
     chat:
       client:
@@ -40,7 +45,7 @@ spring:
         password: ${spring.data.redis.password}
         client-type: redisson
         port: ${spring.data.redis.port}
-      postgresql:
+      mysql:
         initialize-schema: true
         enabled: true
     vectorstore:

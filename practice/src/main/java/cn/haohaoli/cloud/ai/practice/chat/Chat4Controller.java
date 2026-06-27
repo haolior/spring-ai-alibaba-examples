@@ -1,6 +1,7 @@
 package cn.haohaoli.cloud.ai.practice.chat;
 
 import com.alibaba.cloud.ai.memory.jdbc.JdbcChatMemoryRepository;
+import com.alibaba.cloud.ai.memory.jdbc.MysqlChatMemoryRepository;
 import com.alibaba.cloud.ai.memory.jdbc.PostgresChatMemoryRepository;
 import com.alibaba.cloud.ai.memory.redis.RedissonRedisChatMemoryRepository;
 import jakarta.servlet.http.HttpServletResponse;
@@ -33,7 +34,7 @@ public class Chat4Controller {
 
     public Chat4Controller(ChatClient.Builder chatClientBuilder,
                            RedissonRedisChatMemoryRepository redisChatMemoryRepository,
-                           PostgresChatMemoryRepository postgresChatMemoryRepository) {
+                           MysqlChatMemoryRepository mysqlChatMemoryRepository) {
 
         this.chatClient = chatClientBuilder
                 .defaultAdvisors(
@@ -41,7 +42,7 @@ public class Chat4Controller {
                 )
                 .build();
         this.redisChatMemoryRepository = redisChatMemoryRepository;
-        this.jdbcChatMemoryRepository = postgresChatMemoryRepository;
+        this.jdbcChatMemoryRepository = mysqlChatMemoryRepository;
         this.inMemoryChatMemoryRepository = new InMemoryChatMemoryRepository();
 
     }

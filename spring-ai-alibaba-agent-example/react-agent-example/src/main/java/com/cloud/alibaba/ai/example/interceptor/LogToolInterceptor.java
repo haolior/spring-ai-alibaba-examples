@@ -14,12 +14,13 @@ public class LogToolInterceptor extends ToolInterceptor {
 
     @Override
     public ToolCallResponse interceptToolCall(ToolCallRequest request, ToolCallHandler handler) {
-        log.info("ToolInterceptor: Tool {} is called!", request.getToolName());
+        // 仅记录工具调用入口，实际执行仍交给后续 handler。
+        log.info("工具拦截器：即将调用工具 {}", request.getToolName());
         return handler.call(request);
     }
 
     @Override
     public String getName() {
-        return "LogToolInterceptor";
+        return "工具调用日志拦截器";
     }
 }

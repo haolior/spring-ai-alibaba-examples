@@ -15,7 +15,7 @@ public class FileReadTool implements Tool<FileReadTool.Request, String> {
     @Override
     public ToolCallback toolCallback() {
         return FunctionToolCallback.builder("file_read", this)
-                .description("Tool for read files. ")
+                .description("用于读取本地文件的工具")
                 .inputType(Request.class)
                 .build();
     }
@@ -23,16 +23,17 @@ public class FileReadTool implements Tool<FileReadTool.Request, String> {
     @Override
     public String apply(FileReadTool.Request request, ToolContext toolContext) {
         try {
+            // 读取模型指定的文件路径，并把内容返回给 Agent 作为后续推理依据。
             return Files.readString(Path.of(request.filePath));
         } catch (IOException e) {
-            return "Error reading file: " + e.getMessage();
+            return "文件读取失败：" + e.getMessage();
         }
     }
 
-    @JsonClassDescription("Request for the FileReadTool")
+    @JsonClassDescription("读取文件请求")
     public record Request(
             @JsonProperty(value = "file_path", required = true)
-            @JsonPropertyDescription("The path of the file to read")
+            @JsonPropertyDescription("要读取的文件路径")
             String filePath
     ) {}
 }

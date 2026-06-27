@@ -16,7 +16,7 @@ public class FileWriteTool implements Tool<FileWriteTool.Request, String> {
     @Override
     public ToolCallback toolCallback() {
         return FunctionToolCallback.builder("file_write", this)
-                .description("Tool for write files")
+                .description("用于写入本地文件的工具")
                 .inputType(Request.class)
                 .build();
     }
@@ -24,6 +24,7 @@ public class FileWriteTool implements Tool<FileWriteTool.Request, String> {
     @Override
     public String apply(FileWriteTool.Request s, ToolContext toolContext) {
         try {
+            // 将模型传入的相对路径限制在当前运行目录下，避免直接使用未规范化的路径。
             String safePath = Paths.get(System.getProperty("user.dir"))
                     .resolve(s.filePath)
                     .normalize()
@@ -33,19 +34,19 @@ public class FileWriteTool implements Tool<FileWriteTool.Request, String> {
             writer.write(s.content);
             writer.close();
             
-            return "Successfully wrote to file: " + s.filePath;
+            return "文件写入成功：" + s.filePath;
         } catch (IOException e) {
-            return "Error writing to file: " + e.getMessage();
+            return "文件写入失败：" + e.getMessage();
         }
     }
 
-    @JsonClassDescription("Request for writing a file")
+    @JsonClassDescription("写入文件请求")
     public record Request(
             @JsonProperty(value = "file_path", required = true)
-            @JsonPropertyDescription("The path of the file to write")
+            @JsonPropertyDescription("要写入的文件路径")
             String filePath,
             @JsonProperty(value = "content", required = true)
-            @JsonPropertyDescription("The content to write to the file")
+            @JsonPropertyDescription("要写入文件的内容")
             String content
     ) {
 
