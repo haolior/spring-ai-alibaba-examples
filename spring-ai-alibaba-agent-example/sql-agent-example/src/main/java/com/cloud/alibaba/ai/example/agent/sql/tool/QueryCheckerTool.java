@@ -30,10 +30,9 @@ import org.springframework.stereotype.Component;
 import java.util.function.BiFunction;
 
 /**
- * Tool for checking SQL queries for common mistakes.
+ * 检查 SQL 查询常见问题的工具。
  * <p>
- * This tool uses the LLM to validate SQL queries before execution,
- * helping catch syntax errors and common mistakes.
+ * 该工具在执行前使用 LLM 检查 SQL 查询，帮助发现语法错误和常见问题。
  * </p>
  *
  * @author zth9
@@ -47,27 +46,27 @@ public class QueryCheckerTool implements BiFunction<QueryCheckerTool.Request, To
 	private final ChatModel chatModel;
 
 	private static final String CHECK_PROMPT_TEMPLATE = """
-			You are a SQL query validator. Check the following SQLite query for common mistakes:
+			你是一个 SQL 查询检查器。请检查下面的 SQLite 查询是否存在常见问题：
 
 			```sql
 			%s
 			```
 
-			Check for:
-			1. Syntax errors
-			2. Incorrect column or table names (if context is provided)
-			3. Missing quotes around string values
-			4. Incorrect JOIN conditions
-			5. GROUP BY clause issues
-			6. Any potential SQL injection vulnerabilities
+			请重点检查：
+			1. 语法错误
+			2. 表名或字段名是否可能错误
+			3. 字符串值是否缺少引号
+			4. JOIN 条件是否正确
+			5. GROUP BY 子句是否合理
+			6. 是否存在潜在 SQL 注入风险
 
-			If the query looks correct, respond with exactly:
-			"VALID: The query appears to be correct."
+			如果查询看起来正确，请只回复：
+			"正确：查询看起来是正确的。"
 
-			If there are issues, respond with:
-			"ISSUES FOUND:" followed by a numbered list of problems and suggested fixes.
+			如果发现问题，请回复：
+			"发现问题："，然后用编号列表说明问题和修复建议。
 
-			Keep your response concise.
+			请保持回答简洁。
 			""";
 
 	public QueryCheckerTool(ChatModel chatModel) {
@@ -76,8 +75,8 @@ public class QueryCheckerTool implements BiFunction<QueryCheckerTool.Request, To
 
 	@Override
 	public String apply(Request request, ToolContext toolContext) {
-		logger.info("========== Query Checker Tool Start ==========");
-		logger.info("Query to check: {}", request.query());
+		logger.info("========== SQL 检查工具开始执行 ==========");
+		logger.info("待检查 SQL：{}", request.query());
 
 		try {
 			String promptText = String.format(CHECK_PROMPT_TEMPLATE, request.query());
@@ -85,29 +84,28 @@ public class QueryCheckerTool implements BiFunction<QueryCheckerTool.Request, To
 
 			String result = chatModel.call(prompt).getResult().getOutput().getText();
 
-			logger.info("Check result: {}", result);
-			logger.info("========== Query Checker Tool End ==========");
+			logger.info("SQL 检查结果：{}", result);
+			logger.info("========== SQL 检查工具执行结束 ==========");
 
 			return result;
 		}
 		catch (Exception e) {
-			logger.error("Error checking query", e);
-			return "Error checking query: " + e.getMessage();
+			logger.error("检查 SQL 查询失败", e);
+			return "检查 SQL 查询失败：" + e.getMessage();
 		}
 	}
 
 	public ToolCallback toolCallback() {
 		return FunctionToolCallback.builder("check_query", this)
-			.description("Validates a SQL query for common mistakes before execution. "
-					+ "Use this tool to double-check your query before running it with execute_query. "
-					+ "The tool will identify syntax errors, potential issues, and suggest fixes.")
+			.description("在执行前检查 SQL 查询中的常见问题。调用 execute_query 前应先使用该工具检查 SQL，"
+					+ "它会识别语法错误、潜在问题并给出修复建议。")
 			.inputType(Request.class)
 			.build();
 	}
 
-	@JsonClassDescription("Request to check a SQL query for errors")
+	@JsonClassDescription("检查 SQL 查询错误的请求")
 	public record Request(@JsonProperty(value = "query", required = true)
-	@JsonPropertyDescription("The SQL query to validate for common mistakes") String query) {
+	@JsonPropertyDescription("需要检查常见问题的 SQL 查询语句") String query) {
 	}
 
 }

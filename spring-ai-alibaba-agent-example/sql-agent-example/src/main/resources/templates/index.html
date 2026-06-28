@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Spring AI Alibaba - SQL Agent Demo</title>
+    <title>Spring AI Alibaba - SQL Agent 演示</title>
     <style>
         * {
             margin: 0;
@@ -198,10 +198,10 @@
     <div class="container">
         <div class="header">
             <h1>Spring AI Alibaba SQL Agent</h1>
-            <p>Natural Language to SQL - Ask questions about your database in plain language</p>
+            <p>自然语言转 SQL：用中文直接询问数据库</p>
             <div class="db-info">
-                Database: <code>E-commerce</code> |
-                Tables: <code>customers</code>, <code>products</code>, <code>orders</code>, <code>order_items</code>, <code>categories</code>
+                数据库：<code>电商示例库</code> |
+                数据表：<code>customers</code>, <code>products</code>, <code>orders</code>, <code>order_items</code>, <code>categories</code>
             </div>
         </div>
 
@@ -209,31 +209,31 @@
             <div class="message assistant">
                 <span class="message-label">SQL Agent</span>
                 <div class="message-content">
-Hello! I'm a SQL Agent powered by Spring AI Alibaba. I can answer questions about the e-commerce database using natural language.
+你好！我是基于 Spring AI Alibaba 的 SQL Agent，可以用自然语言回答电商数据库相关问题。
 
-You can ask me questions like:
-- "What are the top 5 best-selling products?"
-- "Show me customers from Beijing"
-- "What's the total revenue by category?"
+你可以这样问我：
+- “销量最高的 5 个商品是什么？”
+- “北京有哪些客户？”
+- “每个商品分类的销售额是多少？”
 
-I'll analyze the database, generate SQL queries, and provide you with answers!
+我会分析数据库表结构、生成 SQL 查询，并根据查询结果给出回答。
                 </div>
             </div>
         </div>
 
         <div class="example-queries">
-            <h3>Try asking:</h3>
-            <button onclick="askExample('What tables are in the database?')">List all tables</button>
-            <button onclick="askExample('Show me the top 5 customers by order amount')">Top customers</button>
-            <button onclick="askExample('What are the best-selling products?')">Best sellers</button>
-            <button onclick="askExample('How many orders are in each status?')">Order status</button>
-            <button onclick="askExample('What is the average order value by city?')">Avg order by city</button>
+            <h3>试着问：</h3>
+            <button onclick="askExample('数据库里有哪些表？')">列出所有表</button>
+            <button onclick="askExample('按订单金额排名前 5 的客户是谁？')">高价值客户</button>
+            <button onclick="askExample('销量最高的商品有哪些？')">热销商品</button>
+            <button onclick="askExample('每种状态下分别有多少订单？')">订单状态</button>
+            <button onclick="askExample('各城市的平均订单金额是多少？')">城市平均订单</button>
         </div>
 
         <div class="input-container">
-            <input type="text" id="messageInput" placeholder="Ask a question about the database..."
+            <input type="text" id="messageInput" placeholder="请输入数据库相关问题..."
                    onkeypress="if(event.key==='Enter')sendMessage()">
-            <button id="sendButton" onclick="sendMessage()">Send</button>
+            <button id="sendButton" onclick="sendMessage()">发送</button>
         </div>
     </div>
 
@@ -253,19 +253,19 @@ I'll analyze the database, generate SQL queries, and provide you with answers!
             const message = input.value.trim();
             if (!message) return;
 
-            // Add user message
+            // 添加用户消息。
             addMessage(message, 'user');
             input.value = '';
             input.disabled = true;
             sendButton.disabled = true;
 
-            // Add loading indicator
+            // 添加加载提示。
             const loadingDiv = document.createElement('div');
             loadingDiv.className = 'message assistant';
             loadingDiv.innerHTML = `
                 <span class="message-label">SQL Agent</span>
                 <div class="loading">
-                    Analyzing database<div class="loading-dots"><span></span><span></span><span></span></div>
+                    正在分析数据库<div class="loading-dots"><span></span><span></span><span></span></div>
                 </div>
             `;
             chatContainer.appendChild(loadingDiv);
@@ -286,14 +286,14 @@ I'll analyze the database, generate SQL queries, and provide you with answers!
                 const data = await response.json();
                 threadId = data.threadId;
 
-                // Remove loading indicator
+                // 移除加载提示。
                 chatContainer.removeChild(loadingDiv);
 
-                // Add assistant response
+                // 添加 Agent 回复。
                 addMessage(data.response, 'assistant');
             } catch (error) {
                 chatContainer.removeChild(loadingDiv);
-                addMessage('Sorry, an error occurred. Please try again.', 'assistant');
+                addMessage('抱歉，处理请求时发生错误，请稍后重试。', 'assistant');
             }
 
             input.disabled = false;
@@ -306,7 +306,7 @@ I'll analyze the database, generate SQL queries, and provide you with answers!
             const messageDiv = document.createElement('div');
             messageDiv.className = `message ${role}`;
             messageDiv.innerHTML = `
-                <span class="message-label">${role === 'user' ? 'You' : 'SQL Agent'}</span>
+                <span class="message-label">${role === 'user' ? '你' : 'SQL Agent'}</span>
                 <div class="message-content">${escapeHtml(content)}</div>
             `;
             chatContainer.appendChild(messageDiv);

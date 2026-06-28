@@ -1,4 +1,4 @@
-# Spring AI Alibaba SQL Agent Example
+# Spring AI Alibaba SQL Agent 示例
 
 本示例演示如何使用 Spring AI Alibaba 的 ReactAgent 框架构建一个 SQL Agent，该 Agent 可以理解自然语言问题并自动生成和执行 SQL 查询。
 
@@ -20,7 +20,7 @@
 
 - Java 17+
 - Maven 3.6+
-- DashScope API Key
+- DashScope API Key（通义千问 API Key）
 
 ### 运行步骤
 
@@ -59,16 +59,16 @@
 ## 示例对话
 
 ```
-用户: What tables are in the database?
+用户：数据库里有哪些表？
 
-Agent: I can see the following tables in the database: categories, customers, order_items, orders, products.
+Agent：数据库中包含以下表：categories、customers、order_items、orders、products。
 
-用户: Show me the top 5 customers by order amount
+用户：按订单金额排名前 5 的客户是谁？
 
-Agent: Based on my query, here are the top 5 customers by total order amount:
-1. Zhang Wei (Beijing) - ¥11,086
-2. Li Na (Shanghai) - ¥10,497
-3. Chen Jie (Hangzhou) - ¥9,766
+Agent：根据查询结果，订单总金额排名前 5 的客户如下：
+1. 张伟（北京）- ¥11,086
+2. 李娜（上海）- ¥10,497
+3. 陈杰（杭州）- ¥9,766
 ...
 ```
 

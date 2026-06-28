@@ -33,10 +33,9 @@ import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
 /**
- * Tool for getting the schema of specified tables.
+ * 获取指定表结构的工具。
  * <p>
- * This tool returns the CREATE TABLE statement and sample data for the specified tables,
- * helping the agent understand the table structure before writing queries.
+ * 该工具返回指定表的 CREATE TABLE 语句和示例数据，帮助 Agent 在编写 SQL 前理解表结构。
  * </p>
  *
  * @author zth9
@@ -57,8 +56,8 @@ public class GetSchemaTool implements BiFunction<GetSchemaTool.Request, ToolCont
 
 	@Override
 	public String apply(Request request, ToolContext toolContext) {
-		logger.info("========== Get Schema Tool Start ==========");
-		logger.info("Tables requested: {}", request.tables());
+		logger.info("========== 获取表结构工具开始执行 ==========");
+		logger.info("请求查看的表：{}", request.tables());
 
 		try {
 			List<String> tableNames = Arrays.stream(request.tables().split(","))
@@ -67,7 +66,7 @@ public class GetSchemaTool implements BiFunction<GetSchemaTool.Request, ToolCont
 				.toList();
 
 			if (tableNames.isEmpty()) {
-				return "No table names provided. Please specify table names separated by commas.";
+				return "没有提供表名。请使用逗号分隔多个表名。";
 			}
 
 			StringBuilder result = new StringBuilder();
@@ -77,12 +76,12 @@ public class GetSchemaTool implements BiFunction<GetSchemaTool.Request, ToolCont
 				result.append("\n\n");
 			}
 
-			logger.info("========== Get Schema Tool End ==========");
+			logger.info("========== 获取表结构工具执行结束 ==========");
 			return result.toString().trim();
 		}
 		catch (Exception e) {
-			logger.error("Error getting schema", e);
-			return "Error getting schema: " + e.getMessage();
+			logger.error("获取表结构失败", e);
+			return "获取表结构失败：" + e.getMessage();
 		}
 	}
 
@@ -90,25 +89,25 @@ public class GetSchemaTool implements BiFunction<GetSchemaTool.Request, ToolCont
 		StringBuilder sb = new StringBuilder();
 
 		try {
-			// Get CREATE TABLE statement
+			// 获取 CREATE TABLE 建表语句。
 			String createSql = jdbcTemplate.queryForObject(
 					"SELECT sql FROM sqlite_master WHERE type='table' AND name=?", String.class, tableName);
 
 			sb.append(createSql).append("\n\n");
 
-			// Get sample rows
+			// 获取示例数据。
 			List<Map<String, Object>> sampleRows = jdbcTemplate
 				.queryForList("SELECT * FROM " + sanitizeTableName(tableName) + " LIMIT " + SAMPLE_ROWS);
 
 			if (!sampleRows.isEmpty()) {
 				sb.append("/*\n");
-				sb.append(SAMPLE_ROWS).append(" rows from ").append(tableName).append(" table:\n");
+				sb.append(tableName).append(" 表的前 ").append(SAMPLE_ROWS).append(" 条示例数据：\n");
 
-				// Header
+				// 表头。
 				String header = String.join("\t", sampleRows.get(0).keySet());
 				sb.append(header).append("\n");
 
-				// Data rows
+				// 数据行。
 				for (Map<String, Object> row : sampleRows) {
 					String rowStr = row.values()
 						.stream()
@@ -120,39 +119,37 @@ public class GetSchemaTool implements BiFunction<GetSchemaTool.Request, ToolCont
 			}
 		}
 		catch (Exception e) {
-			sb.append("Error getting schema for table '")
+			sb.append("获取表 '")
 				.append(tableName)
-				.append("': ")
+				.append("' 的结构失败：")
 				.append(e.getMessage())
 				.append("\n");
-			sb.append("Make sure the table exists by calling list_tables first.");
+			sb.append("请先调用 list_tables 确认该表是否存在。");
 		}
 
 		return sb.toString();
 	}
 
 	private String sanitizeTableName(String tableName) {
-		// Basic SQL injection prevention - only allow alphanumeric and underscore
+		// 基础 SQL 注入防护：只允许字母、数字和下划线。
 		if (!tableName.matches("^[a-zA-Z_][a-zA-Z0-9_]*$")) {
-			throw new IllegalArgumentException("Invalid table name: " + tableName);
+			throw new IllegalArgumentException("非法表名：" + tableName);
 		}
 		return tableName;
 	}
 
 	public ToolCallback toolCallback() {
 		return FunctionToolCallback.builder("get_schema", this)
-			.description("Gets the schema (CREATE TABLE statement) and sample rows for the specified tables. "
-					+ "Use this tool to understand the structure and columns of tables before writing queries. "
-					+ "Input should be a comma-separated list of table names. "
-					+ "Example: 'users, orders, products'")
+			.description("获取指定表的结构，包括 CREATE TABLE 建表语句和示例数据。"
+					+ "编写 SQL 前应调用该工具理解表结构和字段含义。"
+					+ "输入参数是用逗号分隔的表名列表，例如：'customers, orders, products'。")
 			.inputType(Request.class)
 			.build();
 	}
 
-	@JsonClassDescription("Request to get schema for specified tables")
+	@JsonClassDescription("获取指定表结构的请求")
 	public record Request(@JsonProperty(value = "tables", required = true)
-	@JsonPropertyDescription("Comma-separated list of table names to get schema for. "
-			+ "Example: 'users, orders, products'") String tables) {
+	@JsonPropertyDescription("需要获取结构的表名列表，多个表名用逗号分隔。例如：'customers, orders, products'") String tables) {
 	}
 
 }

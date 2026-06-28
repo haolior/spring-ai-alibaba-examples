@@ -11,8 +11,8 @@
     </parent>
 
     <artifactId>sql-agent-example</artifactId>
-    <name>Spring AI Alibaba SQL Agent Example</name>
-    <description>Demonstrates a SQL Agent that can answer questions about databases using natural language, powered by Spring AI Alibaba ReactAgent with SQL tools</description>
+    <name>Spring AI Alibaba SQL Agent 示例</name>
+    <description>演示如何基于 Spring AI Alibaba ReactAgent 和 SQL 工具构建一个可以用自然语言查询数据库的 SQL Agent</description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -35,7 +35,7 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
-        <!-- Spring AI Alibaba Agent Framework -->
+        <!-- Spring AI Alibaba Agent 框架 -->
         <dependency>
             <groupId>com.alibaba.cloud.ai</groupId>
             <artifactId>spring-ai-alibaba-agent-framework</artifactId>
@@ -52,13 +52,13 @@
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
         </dependency>
 
-        <!-- JDBC Support -->
+        <!-- JDBC 支持 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-jdbc</artifactId>
         </dependency>
 
-        <!-- SQLite JDBC Driver -->
+        <!-- SQLite JDBC 驱动 -->
         <dependency>
             <groupId>org.xerial</groupId>
             <artifactId>sqlite-jdbc</artifactId>

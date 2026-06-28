@@ -20,6 +20,6 @@ logging:
     com.cloud.alibaba.ai.example: DEBUG
     com.alibaba.cloud.ai.graph: DEBUG
 
-# SQL Agent Configuration
+# SQL Agent 配置
 sql-agent:
   max-results: 10

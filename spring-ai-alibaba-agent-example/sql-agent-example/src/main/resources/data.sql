@@ -1,136 +1,136 @@
--- E-commerce Sample Data
--- Provides realistic sample data for demonstration
+-- 电商示例数据
+-- 提供用于演示 SQL Agent 的中文样例数据。
 
--- Insert Categories
+-- 插入商品分类
 INSERT INTO categories (name, description) VALUES
-('Electronics', 'Electronic devices and accessories'),
-('Clothing', 'Apparel and fashion items'),
-('Books', 'Books and publications'),
-('Home & Kitchen', 'Home appliances and kitchen items'),
-('Sports', 'Sports equipment and outdoor gear');
+('电子产品', '手机、电脑、耳机等电子设备和配件'),
+('服装鞋包', '服饰、鞋履和出行背包'),
+('图书', '小说、技术书和学习资料'),
+('家居厨房', '家用电器和厨房用品'),
+('运动户外', '运动装备和户外用品');
 
--- Insert Customers
+-- 插入客户
 INSERT INTO customers (name, email, phone, city, country) VALUES
-('Zhang Wei', 'zhangwei@example.com', '13800138001', 'Beijing', 'China'),
-('Li Na', 'lina@example.com', '13800138002', 'Shanghai', 'China'),
-('Wang Fang', 'wangfang@example.com', '13800138003', 'Guangzhou', 'China'),
-('Liu Yang', 'liuyang@example.com', '13800138004', 'Shenzhen', 'China'),
-('Chen Jie', 'chenjie@example.com', '13800138005', 'Hangzhou', 'China'),
-('Yang Ming', 'yangming@example.com', '13800138006', 'Chengdu', 'China'),
-('Zhao Lin', 'zhaolin@example.com', '13800138007', 'Wuhan', 'China'),
-('Huang Ying', 'huangying@example.com', '13800138008', 'Nanjing', 'China'),
-('Zhou Tao', 'zhoutao@example.com', '13800138009', 'Xi''an', 'China'),
-('Wu Jun', 'wujun@example.com', '13800138010', 'Suzhou', 'China');
+('张伟', 'zhangwei@example.com', '13800138001', '北京', '中国'),
+('李娜', 'lina@example.com', '13800138002', '上海', '中国'),
+('王芳', 'wangfang@example.com', '13800138003', '广州', '中国'),
+('刘洋', 'liuyang@example.com', '13800138004', '深圳', '中国'),
+('陈杰', 'chenjie@example.com', '13800138005', '杭州', '中国'),
+('杨明', 'yangming@example.com', '13800138006', '成都', '中国'),
+('赵琳', 'zhaolin@example.com', '13800138007', '武汉', '中国'),
+('黄莹', 'huangying@example.com', '13800138008', '南京', '中国'),
+('周涛', 'zhoutao@example.com', '13800138009', '西安', '中国'),
+('吴军', 'wujun@example.com', '13800138010', '苏州', '中国');
 
--- Insert Products
+-- 插入商品
 INSERT INTO products (name, description, price, stock_quantity, category_id) VALUES
--- Electronics
+-- 电子产品
 ('iPhone 15 Pro', 'Apple iPhone 15 Pro 256GB', 8999.00, 50, 1),
-('MacBook Air M3', 'Apple MacBook Air 13-inch M3 chip', 9499.00, 30, 1),
-('AirPods Pro 2', 'Apple AirPods Pro 2nd generation', 1899.00, 100, 1),
-('Huawei Mate 60', 'Huawei Mate 60 Pro 512GB', 6999.00, 45, 1),
-('Sony WH-1000XM5', 'Sony wireless noise-canceling headphones', 2599.00, 60, 1),
+('MacBook Air M3', 'Apple MacBook Air 13 英寸 M3 芯片', 9499.00, 30, 1),
+('AirPods Pro 2', 'Apple AirPods Pro 第二代', 1899.00, 100, 1),
+('华为 Mate 60', '华为 Mate 60 Pro 512GB', 6999.00, 45, 1),
+('索尼 WH-1000XM5', '索尼无线降噪耳机', 2599.00, 60, 1),
 
--- Clothing
-('Nike Air Max', 'Nike Air Max 90 running shoes', 899.00, 200, 2),
-('Uniqlo Down Jacket', 'Ultra light down jacket', 599.00, 150, 2),
-('Levi''s 501 Jeans', 'Classic straight fit jeans', 699.00, 120, 2),
-('Adidas Hoodie', 'Adidas Originals hoodie', 459.00, 180, 2),
-('North Face Backpack', 'The North Face hiking backpack', 799.00, 80, 2),
+-- 服装鞋包
+('Nike Air Max', 'Nike Air Max 90 跑步鞋', 899.00, 200, 2),
+('优衣库羽绒服', '轻薄保暖羽绒服', 599.00, 150, 2),
+('Levi''s 501 牛仔裤', '经典直筒牛仔裤', 699.00, 120, 2),
+('阿迪达斯连帽衫', 'Adidas Originals 连帽卫衣', 459.00, 180, 2),
+('北面双肩包', 'The North Face 户外徒步背包', 799.00, 80, 2),
 
--- Books
-('The Three-Body Problem', 'Liu Cixin sci-fi novel', 59.00, 500, 3),
-('Erta''s Philosophy', 'Philosophy introduction book', 89.00, 300, 3),
-('Python Programming', 'Learn Python programming from scratch', 79.00, 400, 3),
-('Machine Learning Basics', 'Introduction to machine learning', 129.00, 250, 3),
-('Spring Boot in Action', 'Spring Boot development guide', 99.00, 350, 3),
+-- 图书
+('三体', '刘慈欣科幻小说', 59.00, 500, 3),
+('哲学入门', '面向初学者的哲学入门书', 89.00, 300, 3),
+('Python 编程', '从零开始学习 Python 编程', 79.00, 400, 3),
+('机器学习基础', '机器学习入门教程', 129.00, 250, 3),
+('Spring Boot 实战', 'Spring Boot 开发指南', 99.00, 350, 3),
 
--- Home & Kitchen
-('Xiaomi Rice Cooker', 'Smart rice cooker 4L', 299.00, 100, 4),
-('Dyson V15 Vacuum', 'Dyson cordless vacuum cleaner', 4999.00, 25, 4),
-('Philips Air Fryer', 'Digital air fryer 5.5L', 899.00, 60, 4),
-('IKEA Table Lamp', 'LED desk lamp with USB port', 199.00, 200, 4),
-('Nespresso Coffee Machine', 'Automatic coffee machine', 1299.00, 40, 4),
+-- 家居厨房
+('小米电饭煲', '4L 智能电饭煲', 299.00, 100, 4),
+('戴森 V15 吸尘器', '戴森无线吸尘器', 4999.00, 25, 4),
+('飞利浦空气炸锅', '5.5L 数字空气炸锅', 899.00, 60, 4),
+('宜家台灯', '带 USB 接口的 LED 台灯', 199.00, 200, 4),
+('Nespresso 咖啡机', '全自动胶囊咖啡机', 1299.00, 40, 4),
 
--- Sports
-('Wilson Tennis Racket', 'Professional tennis racket', 1599.00, 35, 5),
-('Yoga Mat', 'Non-slip yoga mat 6mm', 129.00, 300, 5),
-('Fitbit Charge 5', 'Fitness tracker smartband', 999.00, 80, 5),
-('Decathlon Bicycle', 'Mountain bike 26-inch', 1899.00, 20, 5),
-('Swimming Goggles', 'Anti-fog swimming goggles', 99.00, 150, 5);
+-- 运动户外
+('威尔胜网球拍', '专业网球拍', 1599.00, 35, 5),
+('瑜伽垫', '6mm 防滑瑜伽垫', 129.00, 300, 5),
+('Fitbit Charge 5', '智能运动手环', 999.00, 80, 5),
+('迪卡侬自行车', '26 英寸山地自行车', 1899.00, 20, 5),
+('泳镜', '防雾游泳眼镜', 99.00, 150, 5);
 
--- Insert Orders
+-- 插入订单
 INSERT INTO orders (customer_id, order_date, status, total_amount, shipping_address) VALUES
-(1, '2024-01-15 10:30:00', 'completed', 10898.00, 'Beijing Chaoyang District'),
-(2, '2024-01-16 14:20:00', 'completed', 1498.00, 'Shanghai Pudong District'),
-(3, '2024-01-17 09:15:00', 'shipped', 6999.00, 'Guangzhou Tianhe District'),
-(4, '2024-01-18 16:45:00', 'completed', 2698.00, 'Shenzhen Nanshan District'),
-(5, '2024-01-19 11:00:00', 'processing', 9499.00, 'Hangzhou Xihu District'),
-(1, '2024-01-20 13:30:00', 'completed', 188.00, 'Beijing Haidian District'),
-(6, '2024-01-21 10:00:00', 'shipped', 4999.00, 'Chengdu Jinjiang District'),
-(7, '2024-01-22 15:20:00', 'pending', 899.00, 'Wuhan Wuchang District'),
-(8, '2024-01-23 09:45:00', 'completed', 3497.00, 'Nanjing Xuanwu District'),
-(9, '2024-01-24 14:10:00', 'processing', 1899.00, 'Xi''an Yanta District'),
-(10, '2024-01-25 11:30:00', 'completed', 1128.00, 'Suzhou Industrial Park'),
-(2, '2024-01-26 16:00:00', 'shipped', 8999.00, 'Shanghai Jing''an District'),
-(3, '2024-01-27 10:20:00', 'completed', 599.00, 'Guangzhou Haizhu District'),
-(4, '2024-01-28 13:45:00', 'pending', 2599.00, 'Shenzhen Futian District'),
-(5, '2024-01-29 09:00:00', 'completed', 267.00, 'Hangzhou Binjiang District');
+(1, '2024-01-15 10:30:00', '已完成', 10898.00, '北京市朝阳区'),
+(2, '2024-01-16 14:20:00', '已完成', 1498.00, '上海市浦东新区'),
+(3, '2024-01-17 09:15:00', '已发货', 6999.00, '广州市天河区'),
+(4, '2024-01-18 16:45:00', '已完成', 2698.00, '深圳市南山区'),
+(5, '2024-01-19 11:00:00', '处理中', 9499.00, '杭州市西湖区'),
+(1, '2024-01-20 13:30:00', '已完成', 188.00, '北京市海淀区'),
+(6, '2024-01-21 10:00:00', '已发货', 4999.00, '成都市锦江区'),
+(7, '2024-01-22 15:20:00', '待处理', 899.00, '武汉市武昌区'),
+(8, '2024-01-23 09:45:00', '已完成', 3497.00, '南京市玄武区'),
+(9, '2024-01-24 14:10:00', '处理中', 1899.00, '西安市雁塔区'),
+(10, '2024-01-25 11:30:00', '已完成', 1128.00, '苏州工业园区'),
+(2, '2024-01-26 16:00:00', '已发货', 8999.00, '上海市静安区'),
+(3, '2024-01-27 10:20:00', '已完成', 599.00, '广州市海珠区'),
+(4, '2024-01-28 13:45:00', '待处理', 2599.00, '深圳市福田区'),
+(5, '2024-01-29 09:00:00', '已完成', 267.00, '杭州市滨江区');
 
--- Insert Order Items
+-- 插入订单明细
 INSERT INTO order_items (order_id, product_id, quantity, unit_price) VALUES
--- Order 1: iPhone + AirPods
+-- 订单 1：iPhone + AirPods
 (1, 1, 1, 8999.00),
 (1, 3, 1, 1899.00),
 
--- Order 2: Nike shoes + Down jacket
+-- 订单 2：Nike 跑鞋 + 羽绒服
 (2, 6, 1, 899.00),
 (2, 7, 1, 599.00),
 
--- Order 3: Huawei phone
+-- 订单 3：华为手机
 (3, 4, 1, 6999.00),
 
--- Order 4: Sony headphones + Yoga mat
+-- 订单 4：索尼耳机 + 瑜伽垫
 (4, 5, 1, 2599.00),
 (4, 22, 1, 99.00),
 
--- Order 5: MacBook
+-- 订单 5：MacBook
 (5, 2, 1, 9499.00),
 
--- Order 6: Books
+-- 订单 6：图书
 (6, 11, 1, 59.00),
 (6, 13, 1, 79.00),
 (6, 14, 1, 50.00),
 
--- Order 7: Dyson vacuum
+-- 订单 7：戴森吸尘器
 (7, 17, 1, 4999.00),
 
--- Order 8: Air fryer
+-- 订单 8：空气炸锅
 (8, 18, 1, 899.00),
 
--- Order 9: Levi's jeans + Adidas hoodie + backpack
+-- 订单 9：牛仔裤 + 连帽衫 + 背包
 (9, 8, 1, 699.00),
 (9, 9, 2, 459.00),
 (9, 10, 2, 799.00),
 
--- Order 10: Bicycle
+-- 订单 10：自行车
 (10, 24, 1, 1899.00),
 
--- Order 11: Books + Yoga mat
+-- 订单 11：图书 + 瑜伽垫
 (11, 15, 1, 99.00),
 (11, 22, 1, 129.00),
 (11, 6, 1, 899.00),
 
--- Order 12: iPhone
+-- 订单 12：iPhone
 (12, 1, 1, 8999.00),
 
--- Order 13: Down jacket
+-- 订单 13：羽绒服
 (13, 7, 1, 599.00),
 
--- Order 14: Sony headphones
+-- 订单 14：索尼耳机
 (14, 5, 1, 2599.00),
 
--- Order 15: Books
+-- 订单 15：图书
 (15, 11, 1, 59.00),
 (15, 12, 1, 89.00),
 (15, 13, 1, 79.00),

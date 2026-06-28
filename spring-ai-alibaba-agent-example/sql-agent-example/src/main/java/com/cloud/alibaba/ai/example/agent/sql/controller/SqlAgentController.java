@@ -19,6 +19,8 @@ import com.alibaba.cloud.ai.graph.NodeOutput;
 import com.alibaba.cloud.ai.graph.OverAllState;
 import com.alibaba.cloud.ai.graph.RunnableConfig;
 import com.alibaba.cloud.ai.graph.agent.ReactAgent;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.messages.AbstractMessage;
@@ -35,10 +37,9 @@ import java.util.Optional;
 import java.util.UUID;
 
 /**
- * Controller for the SQL Agent
+ * SQL Agent 控制器。
  * <p>
- * Provides REST API endpoints for interacting with the SQL agent,
- * as well as a simple web UI for demonstration purposes.
+ * 提供和 SQL Agent 交互的 REST API，同时提供一个用于演示的简单 Web 页面。
  * </p>
  *
  * @author zth9
@@ -64,7 +65,7 @@ public class SqlAgentController {
 	@PostMapping("/chat")
 	@ResponseBody
 	public ChatResponse chat(@RequestBody ChatRequest request) {
-		logger.info("Received chat request: {}", request.message());
+		logger.info("收到 SQL Agent 对话请求：{}", request.message());
 
 		String threadId = request.threadId();
 		if (threadId == null || threadId.isEmpty()) {
@@ -78,12 +79,12 @@ public class SqlAgentController {
 
 			String response = extractResponse(result);
 
-			logger.info("Agent response: {}", response);
+			logger.info("SQL Agent 回答：{}", response);
 			return new ChatResponse(response, threadId, true);
 		}
 		catch (Exception e) {
-			logger.error("Error processing chat request", e);
-			return new ChatResponse("Sorry, an error occurred: " + e.getMessage(), threadId, false);
+			logger.error("处理 SQL Agent 对话请求失败", e);
+			return new ChatResponse("抱歉，处理请求时发生错误：" + e.getMessage(), threadId, false);
 		}
 	}
 
@@ -96,25 +97,30 @@ public class SqlAgentController {
 
 	private String extractResponse(NodeOutput result) {
 		if (result == null) {
-			return "No response generated.";
+			return "未生成回答。";
 		}
 
 		OverAllState state = result.state();
 
-		// Try "output" key first (common for ReactAgent)
+		// 优先读取 ReactAgent 常用的 output 字段。
 		Optional<Object> output = state.value("output");
 		if (output.isPresent()) {
 			return String.valueOf(output.get());
 		}
 
-		// Fallback to "messages" key
+		// 如果没有 output，则回退读取 messages 字段。
 		Optional<List<AbstractMessage>> messages = state.value("messages");
 		if (messages.isPresent() && !messages.get().isEmpty()) {
 			List<AbstractMessage> msgList = messages.get();
-			return msgList.get(msgList.size() - 1).getText();
+            try {
+                logger.info("messages: {}", new ObjectMapper().writeValueAsString(msgList));
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
+            return msgList.get(msgList.size() - 1).getText();
 		}
 
-		// Last resort: return state string representation
+		// 最后回退为状态对象的字符串表示。
 		return state.toString();
 	}
 

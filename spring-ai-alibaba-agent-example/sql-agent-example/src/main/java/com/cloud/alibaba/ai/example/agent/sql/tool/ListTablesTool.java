@@ -30,10 +30,9 @@ import java.util.List;
 import java.util.function.BiFunction;
 
 /**
- * Tool for listing all tables in the database.
+ * 列出数据库中所有表的工具。
  * <p>
- * This tool returns a comma-separated list of all available tables,
- * helping the agent understand the database structure.
+ * 该工具返回所有可用表名，帮助 Agent 先了解数据库结构。
  * </p>
  *
  * @author zth9
@@ -52,7 +51,7 @@ public class ListTablesTool implements BiFunction<ListTablesTool.Request, ToolCo
 
 	@Override
 	public String apply(Request request, ToolContext toolContext) {
-		logger.info("========== List Tables Tool Start ==========");
+		logger.info("========== 列出数据表工具开始执行 ==========");
 
 		try {
 			List<String> tables = jdbcTemplate.queryForList(
@@ -60,35 +59,34 @@ public class ListTablesTool implements BiFunction<ListTablesTool.Request, ToolCo
 					String.class);
 
 			if (tables.isEmpty()) {
-				logger.info("No tables found in the database");
-				return "No tables found in the database.";
+				logger.info("数据库中没有找到表");
+				return "数据库中没有找到任何表。";
 			}
 
 			String result = String.join(", ", tables);
-			logger.info("Found {} tables: {}", tables.size(), result);
-			logger.info("========== List Tables Tool End ==========");
+			logger.info("找到 {} 张表：{}", tables.size(), result);
+			logger.info("========== 列出数据表工具执行结束 ==========");
 
 			return result;
 		}
 		catch (Exception e) {
-			logger.error("Error listing tables", e);
-			return "Error listing tables: " + e.getMessage();
+			logger.error("列出数据表失败", e);
+			return "列出数据表失败：" + e.getMessage();
 		}
 	}
 
 	public ToolCallback toolCallback() {
 		return FunctionToolCallback.builder("list_tables", this)
-			.description("Lists all available tables in the database. "
-					+ "Use this tool first to understand what tables are available before querying. "
-					+ "Returns a comma-separated list of table names.")
+			.description("列出数据库中所有可用表。生成 SQL 前应先调用该工具，了解当前数据库有哪些表。"
+					+ "返回值是用逗号分隔的表名列表。")
 			.inputType(Request.class)
 			.build();
 	}
 
-	@JsonClassDescription("Request to list all database tables")
+	@JsonClassDescription("列出所有数据库表的请求")
 	public record Request(
 			@JsonProperty(value = "dummy", required = false)
-			@JsonPropertyDescription("Dummy parameter, not used. Just pass an empty string.") String dummy) {
+			@JsonPropertyDescription("占位参数，不实际使用，传空字符串即可。") String dummy) {
 	}
 
 }
