@@ -24,11 +24,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * Configuration for the RAG Agent
+ * RAG 智能体配置
  * <p>
- * This configuration sets up a ReactAgent with knowledge retrieval capabilities,
- * implementing the Agentic RAG pattern. The agent can autonomously decide when
- * to query the knowledge base and how to synthesize responses.
+ * 该配置创建具备知识检索能力的 ReactAgent，实现 Agentic RAG 模式。
+ * 智能体可以自主决定何时查询知识库，并综合检索结果生成回答。
  * </p>
  *
  * @author zth9
@@ -50,10 +49,8 @@ public class RagAgentConfiguration {
 	public ReactAgent ragAgent() throws GraphStateException {
 		return ReactAgent.builder()
 			.name("rag-agent")
-			.description("A RAG (Retrieval Augmented Generation) agent that can answer questions "
-					+ "about Spring AI Alibaba by retrieving relevant documentation from "
-					+ "the knowledge base. The agent uses semantic search to find the most "
-					+ "relevant information and synthesizes comprehensive answers.")
+			.description("一个 RAG（检索增强生成）智能体，可以通过检索知识库中的相关文档回答 Spring AI Alibaba 相关问题。"
+					+ "智能体会使用语义搜索找到最相关的信息，并综合生成完整回答。")
 			.model(chatModel)
 			.saver(new MemorySaver())
 			.tools(knowledgeRetrievalTool.toolCallback())

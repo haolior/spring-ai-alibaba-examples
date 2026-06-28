@@ -1,12 +1,12 @@
-# Agentic RAG Example
+# 智能体增强检索生成示例
 
 ## 模块说明
 
-本模块演示了 **Agentic RAG（智能体增强检索生成）** 模式，使用 Spring AI Alibaba 的 `ReactAgent` 结合知识检索工具实现智能体自主决策何时检索知识库的能力。
+本模块演示了 **智能体增强检索生成（Agentic RAG）** 模式，使用 Spring AI Alibaba 的 `ReactAgent` 结合知识检索工具实现智能体自主决策何时检索知识库的能力。
 
-### 什么是 Agentic RAG？
+### 什么是智能体增强检索生成？
 
-与传统 RAG 不同，Agentic RAG 让智能体自主决定：
+与传统检索增强生成不同，智能体增强检索生成让智能体自主决定：
 - **是否需要检索**：根据用户问题判断是否需要查询知识库
 - **检索什么内容**：智能体自动提取关键词进行检索
 - **如何整合信息**：将检索结果与自身知识结合生成回答
@@ -20,7 +20,7 @@
 | 组件 | 说明 |
 |------|------|
 | `RagAgentApplication` | Spring Boot 应用入口 |
-| `RagAgentConfiguration` | ReactAgent 和 ChatClient 配置 |
+| `RagAgentConfiguration` | 智能体和对话客户端配置 |
 | `RagAgentController` | Web 控制器，处理用户请求 |
 | `KnowledgeRetrievalTool` | 知识检索工具，支持向量相似度搜索 |
 
@@ -50,10 +50,10 @@ spring:
 ```yaml
 rag:
   knowledge:
-    sources:
-      - https://your-docs-url-1
-      - https://your-docs-url-2
+    sources: https://your-docs-url-1,https://your-docs-url-2
 ```
+
+当前示例保留 `@Value` 注入方式，因此知识源使用英文逗号分隔；如果需要恢复 YAML 列表写法，建议改用 `@ConfigurationProperties` 绑定。
 
 ### 3. 启动应用
 
@@ -62,13 +62,13 @@ cd spring-ai-alibaba-agent-example/rag-agent-example
 mvn spring-boot:run
 ```
 
-### 4. 访问 Web 界面
+### 4. 访问页面
 
 打开浏览器访问：http://localhost:8080
 
 ## 接口文档
 
-### Chat 接口
+### 对话接口
 
 **接口路径：** `POST /api/rag/chat`
 
@@ -100,12 +100,12 @@ curl -X POST http://localhost:8080/api/rag/chat \
 
 ### 依赖组件
 
-- **Spring Boot 3.x**: 应用框架
-- **Spring AI Alibaba**: AI 功能集成
-- **ReactAgent**: 智能体框架
-- **SimpleVectorStore**: 内存向量存储
-- **JsoupDocumentReader**: Web 文档加载
-- **DashScope**: 阿里云大模型服务
+- **Spring Boot 3.x**：应用框架
+- **Spring AI Alibaba**：AI 功能集成
+- **ReactAgent**：智能体框架
+- **SimpleVectorStore**：内存向量存储
+- **JsoupDocumentReader**：Web 文档加载
+- **DashScope**：阿里云大模型服务
 
 ### 配置要点
 
@@ -135,10 +135,11 @@ public VectorStore vectorStore(JdbcTemplate jdbcTemplate, EmbeddingModel embeddi
 
 ### 注意事项
 
-2. **网络连接**: 需要能够访问阿里云 DashScope 服务
-3. **知识源可用性**: 确保配置的知识源 URL 可访问
-4. **内存使用**: SimpleVectorStore 将数据存储在内存中，生产环境建议使用持久化向量数据库
+1. **API 密钥**：请确保 `DASHSCOPE_API_KEY` 可用，或在配置文件中填入有效密钥
+2. **网络连接**：需要能够访问阿里云 DashScope 服务
+3. **知识源可用性**：确保配置的知识源 URL 可访问
+4. **内存使用**：SimpleVectorStore 将数据存储在内存中，生产环境建议使用持久化向量数据库
 
 ---
 
-*此示例展示了 Agentic RAG 模式的核心实现，可作为企业知识问答系统的参考基础。*
+*此示例展示了智能体增强检索生成模式的核心实现，可作为企业知识问答系统的参考基础。*

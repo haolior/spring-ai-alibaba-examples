@@ -11,8 +11,8 @@
     </parent>
 
     <artifactId>rag-agent-example</artifactId>
-    <name>Spring AI Alibaba RAG Agent Example</name>
-    <description>Demonstrates the Agentic RAG (Retrieval Augmented Generation) pattern using Spring AI Alibaba ReactAgent with knowledge retrieval tool</description>
+    <name>Spring AI Alibaba RAG 智能体示例</name>
+    <description>基于 Spring AI Alibaba ReactAgent 和知识检索工具演示 Agentic RAG（智能体增强检索生成）模式</description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -35,13 +35,13 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
         
-        <!-- Spring AI Alibaba Agent Framework -->
+        <!-- Spring AI Alibaba 智能体框架 -->
         <dependency>
             <groupId>com.alibaba.cloud.ai</groupId>
             <artifactId>spring-ai-alibaba-agent-framework</artifactId>
         </dependency>
         
-        <!-- DashScope ChatModel -->
+        <!-- DashScope 对话模型 -->
         <dependency>
             <groupId>com.alibaba.cloud.ai</groupId>
             <artifactId>spring-ai-alibaba-starter-dashscope</artifactId>
@@ -52,7 +52,7 @@
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
         </dependency>
 
-        <!-- Jsoup Document Reader for loading web documents -->
+        <!-- 用于加载网页文档的 Jsoup 文档读取器 -->
         <dependency>
             <groupId>org.springframework.ai</groupId>
             <artifactId>spring-ai-jsoup-document-reader</artifactId>

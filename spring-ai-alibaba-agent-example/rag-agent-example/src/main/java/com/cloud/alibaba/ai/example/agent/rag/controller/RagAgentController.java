@@ -37,10 +37,9 @@ import java.util.Map;
 import java.util.UUID;
 
 /**
- * Controller for the RAG Agent
+ * RAG 智能体控制器
  * <p>
- * Provides REST API endpoints for interacting with the RAG agent,
- * as well as a simple web UI for demonstration purposes.
+ * 提供与 RAG 智能体交互的 REST API，同时提供一个用于演示的简单 Web 页面。
  * </p>
  *
  * @author zth9
@@ -66,7 +65,7 @@ public class RagAgentController {
 	@PostMapping("/chat")
 	@ResponseBody
 	public ChatResponse chat(@RequestBody ChatRequest request) {
-		logger.info("Received chat request: {}", request.message());
+		logger.info("收到对话请求：{}", request.message());
 
 		String threadId = request.threadId();
 		if (threadId == null || threadId.isEmpty()) {
@@ -75,17 +74,18 @@ public class RagAgentController {
 
 		try {
 			RunnableConfig config = RunnableConfig.builder().threadId(threadId).build();
-			
+
+			// 这里用 call 也可以
 			NodeOutput result = ragAgent.invokeAndGetOutput(request.message(), config).orElse(null);
 
 			String response = extractResponse(result);
 
-			logger.info("Agent response: {}", response);
+			logger.info("智能体回答：{}", response);
 			return new ChatResponse(response, threadId, true);
 		}
 		catch (Exception e) {
-			logger.error("Error processing chat request", e);
-			return new ChatResponse("Sorry, an error occurred: " + e.getMessage(), threadId, false);
+			logger.error("处理对话请求失败", e);
+			return new ChatResponse("抱歉，处理请求时发生错误：" + e.getMessage(), threadId, false);
 		}
 	}
 
@@ -98,25 +98,25 @@ public class RagAgentController {
 
 	private String extractResponse(NodeOutput result) {
 		if (result == null) {
-			return "No response generated.";
+			return "未生成回答。";
 		}
 
 		OverAllState state = result.state();
 
-		// Try "output" key first (common for ReactAgent)
+		// 优先读取 ReactAgent 常用的 output 字段
 		Optional<Object> output = state.value("output");
 		if (output.isPresent()) {
 			return String.valueOf(output.get());
 		}
 
-		// Fallback to "messages" key
+		// 回退读取 messages 字段
 		Optional<List<AbstractMessage>> messages = state.value("messages");
 		if (messages.isPresent() && !messages.get().isEmpty()) {
 			List<AbstractMessage> msgList = messages.get();
 			return msgList.get(msgList.size() - 1).getText();
 		}
 
-		// Last resort: return state string representation
+		// 最后回退为状态对象的字符串表示
 		return state.toString();
 	}
 

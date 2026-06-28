@@ -38,11 +38,10 @@ import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
 /**
- * Knowledge Retrieval Tool for RAG Agent
+ * RAG 智能体的知识检索工具
  * <p>
- * This tool enables the agent to retrieve relevant documents from a knowledge base
- * using vector similarity search. It follows the Agentic RAG pattern where the
- * agent decides when and how to use the retrieval tool.
+ * 该工具通过向量相似度搜索从知识库中检索相关文档。它遵循 Agentic RAG 模式，
+ * 由智能体自主判断何时以及如何使用检索工具。
  * </p>
  *
  * @author zth9
@@ -57,7 +56,7 @@ public class KnowledgeRetrievalTool implements BiFunction<KnowledgeRetrievalTool
 
 	private final SimpleVectorStore vectorStore;
 
-	@Value("${rag.knowledge.sources}")
+	@Value("#{'${rag.knowledge.sources}'.split(',')}")
 	private List<String> knowledgeSourceUrls;
 
 	public KnowledgeRetrievalTool(EmbeddingModel embeddingModel) {
@@ -66,33 +65,34 @@ public class KnowledgeRetrievalTool implements BiFunction<KnowledgeRetrievalTool
 
 	@PostConstruct
 	void initKnowledgeBase() {
-		logger.info("Initializing knowledge base from {} sources...", knowledgeSourceUrls.size());
+		logger.info("开始从 {} 个知识源初始化知识库...", knowledgeSourceUrls.size());
 
-		for (String url : knowledgeSourceUrls) {
+		for (String sourceUrl : knowledgeSourceUrls) {
+			String url = sourceUrl.trim();
 			try {
 				JsoupDocumentReader reader = new JsoupDocumentReader(url);
 				List<Document> documents = reader.get();
-				logger.info("Loaded {} documents from {}", documents.size(), url);
+				logger.info("已从 {} 加载 {} 个文档", url, documents.size());
 
 				TokenTextSplitter splitter = new TokenTextSplitter();
 				List<Document> splitDocuments = splitter.apply(documents);
-				logger.info("Split into {} chunks", splitDocuments.size());
+				logger.info("已切分为 {} 个片段", splitDocuments.size());
 
 				vectorStore.add(splitDocuments);
-				logger.info("Added {} chunks to vector store", splitDocuments.size());
+				logger.info("已向向量库写入 {} 个片段", splitDocuments.size());
 			}
 			catch (Exception e) {
-				logger.warn("Failed to load documents from {}: {}", url, e.getMessage());
+				logger.warn("从 {} 加载文档失败：{}", url, e.getMessage());
 			}
 		}
 
-		logger.info("Knowledge base initialization completed");
+		logger.info("知识库初始化完成");
 	}
 
 	@Override
 	public String apply(Request request, ToolContext toolContext) {
-		logger.info("========== Knowledge Retrieval Tool Start ==========");
-		logger.info("Query: {}", request.query());
+		logger.info("========== 知识检索工具开始执行 ==========");
+		logger.info("查询内容：{}", request.query());
 
 		int topK = request.topK() != null ? request.topK() : DEFAULT_TOP_K;
 
@@ -101,37 +101,34 @@ public class KnowledgeRetrievalTool implements BiFunction<KnowledgeRetrievalTool
 		List<Document> documents = vectorStore.similaritySearch(searchRequest);
 
 		if (documents.isEmpty()) {
-			logger.info("No relevant documents found for query: {}", request.query());
-			return "No relevant information found in the knowledge base for the given query.";
+			logger.info("未找到与查询相关的文档：{}", request.query());
+			return "知识库中没有找到与该问题相关的信息。";
 		}
 
 		String result = documents.stream()
 			.map(doc -> "---\n" + doc.getFormattedContent() + "\n---")
 			.collect(Collectors.joining("\n\n"));
 
-		logger.info("Retrieved {} relevant documents", documents.size());
-		logger.info("========== Knowledge Retrieval Tool End ==========");
+		logger.info("已检索到 {} 个相关文档", documents.size());
+		logger.info("========== 知识检索工具执行结束 ==========");
 
 		return result;
 	}
 
 	public ToolCallback toolCallback() {
 		return FunctionToolCallback.builder("knowledge_retrieval", this)
-			.description("Retrieves relevant information from the Spring AI Alibaba knowledge base. "
-					+ "Use this tool when you need to answer questions about Spring AI Alibaba, "
-					+ "its features, configuration, or usage. " + "The tool performs semantic search to find the most "
-					+ "relevant documentation based on the query.")
+			.description("从 Spring AI Alibaba 知识库检索相关信息。当需要回答 Spring AI Alibaba 的功能、配置或使用方式问题时使用该工具。"
+					+ "工具会基于查询内容进行语义搜索，找到最相关的文档。")
 			.inputType(Request.class)
 			.build();
 	}
 
-	@JsonClassDescription("Request for knowledge retrieval from the documentation")
+	@JsonClassDescription("从文档中检索知识的请求")
 	public record Request(@JsonProperty(value = "query", required = true)
-	@JsonPropertyDescription("The search query to find relevant documentation. "
-			+ "Be specific and include key terms related to your question.") String query,
+	@JsonPropertyDescription("用于查找相关文档的搜索问题。请尽量具体，并包含与问题相关的关键词。") String query,
 
 			@JsonProperty(value = "top_k")
-			@JsonPropertyDescription("Number of top results to retrieve (default: 4)") Integer topK) {
+			@JsonPropertyDescription("需要返回的最相关结果数量，默认值为 4") Integer topK) {
 	}
 
 }

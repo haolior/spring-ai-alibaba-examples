@@ -19,11 +19,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
- * RAG Agent Example Application
+ * RAG 智能体示例应用
  * <p>
- * This application demonstrates the Agentic RAG (Retrieval Augmented Generation) pattern
- * using Spring AI Alibaba. The agent can autonomously retrieve relevant documents from
- * a knowledge base and generate comprehensive answers to user questions.
+ * 该应用基于 Spring AI Alibaba 演示 Agentic RAG（智能体增强检索生成）模式。
+ * 智能体可以自主从知识库检索相关文档，并为用户问题生成综合回答。
  * </p>
  *
  * @author zth9
