@@ -9,7 +9,7 @@ let message = defineProps<MessageItem>();
     <a-comment>
       <template #author
         ><a style="font-size: 16px">{{
-          message.role === "user" ? "🧑‍💻 You" : "🤖 Assistant"
+          message.role === "user" ? "🧑‍💻 我" : "🤖 助手"
         }}</a></template
       >
       <template #content>

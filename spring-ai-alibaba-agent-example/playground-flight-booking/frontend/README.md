@@ -1,13 +1,13 @@
-## Startup
+## 启动说明
 
 ```shell
-# add vite vue project
+# 创建 Vite Vue 项目
 # https://vuejs.org/guide/scaling-up/tooling.html
-# Vue CLI is the official webpack-based toolchain for Vue. 
-# It is now in maintenance mode and we recommend starting new projects with Vite unless you rely on specific webpack-only features. 
-# Vite will provide superior developer experience in most cases.
+# Vue CLI 是官方基于 webpack 的工具链，目前已进入维护模式。
+# 除非依赖 webpack 专属能力，推荐新项目优先使用 Vite。
+# 大多数场景下，Vite 能提供更好的开发体验。
 
-# note your env version
+# 注意本地环境版本
 # node v18.0.0
 # yarn 1.22.21
 
@@ -17,139 +17,129 @@ yarn
 
 yarn format
 
-# run it
+# 启动开发服务
 yarn dev
 
-
-# main com
+# 主要组件库
 yarn add ant-design-vue@4.x
-
-
 ```
 
-## Develop
+## 开发说明
 
-1. todo
-> if a function is not complete but show the entry in your page, 
-> please use notification.todo to mark it
+1. 待办功能
+
+如果功能尚未完成，但页面上已经展示入口，请使用 `notification.todo` 标记。
+
 ```shell
 /**
- * this function is showing some tips about our Q&A
+ * 这个函数用于展示问答提示
  * TODO
  */
 function globalQuestion() {
-  devTool.todo("show Q&A tips")
+  devTool.todo("展示问答提示")
 }
 ```
-2. global css var 
-   ```js
-   // if you want use the global css var, such as primary color
-   // create a reactive reference to a var by 'ref'
-   export const PRIMARY_COLOR = ref('#17b392')
-   
-   // In js
-   import {PRIMARY_COLOR} from '@/base/constants'
-   
-   // In CSS, use __null for explicit reference to prevent being cleared by code formatting.
-   let __null = PRIMARY_COLOR
-   
-   ```
 
-3. provide and inject
+2. 全局 CSS 变量
 
-  
+```js
+// 如果需要使用全局 CSS 变量，例如主色
+// 可以通过 ref 创建响应式引用
+export const PRIMARY_COLOR = ref('#17b392')
 
-4. icon: https://icones.js.org/
+// 在 JS 中使用
+import {PRIMARY_COLOR} from '@/base/constants'
 
-   ```html
-   <Icon icon="svg-spinners:pulse-ring" />
-     
-   ```
+// 在 CSS 中使用 __null 显式引用，避免被代码格式化清理
+let __null = PRIMARY_COLOR
+```
 
-5. api
+3. Provide / Inject
 
-   > Agreement: if your api's path starts with mock, you will get a mock result
+按 Vue 组合式 API 的方式使用即可。
 
-   1. Declear api
+4. 图标
 
-      ```ts
-      
-      import request from '@/base/http/request'
-      
-      export const getClusterInfo = (params: any):Promise<any> => {
-          return request({
-              url: '/metrics/cluster',
-              method: 'get',
-              params
-          })
-      }
-      
-      ```
+图标资源地址：https://icones.js.org/
 
-      
+```html
+<Icon icon="svg-spinners:pulse-ring" />
+```
 
-   2. Declear mock api
+5. API
 
-      ```ts
-      // define a mock api
-      import Mock from 'mockjs'
-      Mock.mock('/mock/metrics/cluster', 'get', {
-          code: 200,
-          message: '成功',
-          data: {
-              all: Mock.mock('@integer(100, 500)'),
-              application: Mock.mock('@integer(80, 200)'),
-              consumers: Mock.mock('@integer(80, 200)'),
-              providers: Mock.mock('@integer(80, 200)'),
-              services: Mock.mock('@integer(80, 200)'),
-              versions: ["dubbo-golang-3.0.4"],
-              protocols: ["tri"],
-              rules: [],
-              configCenter: "127.0.0.1:2181",
-              registry: "127.0.0.1:2181",
-              metadataCenter: "127.0.0.1:2181",
-              grafana: "127.0.0.1:3000",
-              prometheus: "127.0.0.1:9090"
-          }
-      })
-      
-      // import in main.ts
-      import './api/mock/mockCluster.js'
-      
-      ```
+约定：如果接口路径以 `mock` 开头，则返回 mock 结果。
 
-   3. invoke api
+声明接口：
 
-      ```ts
-      
-      onMounted(async () => {
-        let {data} = await getClusterInfo({})
-      })
-      ```
+```ts
+import request from '@/base/http/request'
 
-   4. decide where the request is to go : request.ts
+export const getClusterInfo = (params: any):Promise<any> => {
+    return request({
+        url: '/metrics/cluster',
+        method: 'get',
+        params
+    })
+}
+```
 
-      ```ts
-      // request.ts
-      
-      const service: AxiosInstance = axios.create({
-          //  change this to decide where to go
-          baseURL: '/mock',
-          timeout: 30 * 1000
-      })
-      ```
+声明 mock 接口：
 
+```ts
+// 定义 mock 接口
+import Mock from 'mockjs'
+Mock.mock('/mock/metrics/cluster', 'get', {
+    code: 200,
+    message: '成功',
+    data: {
+        all: Mock.mock('@integer(100, 500)'),
+        application: Mock.mock('@integer(80, 200)'),
+        consumers: Mock.mock('@integer(80, 200)'),
+        providers: Mock.mock('@integer(80, 200)'),
+        services: Mock.mock('@integer(80, 200)'),
+        versions: ["dubbo-golang-3.0.4"],
+        protocols: ["tri"],
+        rules: [],
+        configCenter: "127.0.0.1:2181",
+        registry: "127.0.0.1:2181",
+        metadataCenter: "127.0.0.1:2181",
+        grafana: "127.0.0.1:3000",
+        prometheus: "127.0.0.1:9090"
+    }
+})
 
-## Build and Deploy
+// 在 main.ts 中引入
+import './api/mock/mockCluster.js'
+```
 
-1. Build
+调用接口：
 
-   ```shell
-   yarn build
-   ```
+```ts
+onMounted(async () => {
+  let {data} = await getClusterInfo({})
+})
+```
 
-2. Deploy
+请求目标由 `request.ts` 决定：
 
-   Copy the `dist/assets` folder to the path `src/main/resources/static`
-   Copy the `dist/index.html` file to the path `src/main/resources/templates`
+```ts
+const service: AxiosInstance = axios.create({
+    // 修改这里决定请求转发到哪里
+    baseURL: '/mock',
+    timeout: 30 * 1000
+})
+```
 
+## 构建与部署
+
+构建：
+
+```shell
+yarn build
+```
+
+部署：
+
+将 `dist/assets` 文件夹复制到 `src/main/resources/static`。
+将 `dist/index.html` 文件复制到 `src/main/resources/templates`。

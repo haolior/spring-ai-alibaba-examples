@@ -66,7 +66,7 @@ public class BookingTools {
 				return flightBookingService.getBookingDetails(request.bookingNumber(), request.name());
 			}
 			catch (Exception e) {
-				logger.warn("Booking details: {}", NestedExceptionUtils.getMostSpecificCause(e).getMessage());
+				logger.warn("机票预订详情查询失败：{}", NestedExceptionUtils.getMostSpecificCause(e).getMessage());
 				return new BookingDetails(request.bookingNumber(), request.name(), null, null, null, null, null);
 			}
 		};

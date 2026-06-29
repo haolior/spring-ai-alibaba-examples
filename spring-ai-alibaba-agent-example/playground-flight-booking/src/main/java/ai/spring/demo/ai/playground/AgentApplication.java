@@ -44,8 +44,7 @@ public class AgentApplication  {
 		new SpringApplicationBuilder(AgentApplication.class).run(args);
 	}
 
-	// In the real world, ingesting documents would often happen separately, on a CI
-	// server or similar.
+	// 真实项目中，文档入库通常会在 CI 服务或独立数据管道中完成。
 	@Bean
 	CommandLineRunner ingestTermOfServiceToVectorStore(
 			VectorStore vectorStore,
@@ -53,7 +52,7 @@ public class AgentApplication  {
 	) {
 
 		return args -> {
-			// Ingest the document into the vector store
+			// 将文档写入向量数据库
 			/*
 			 * 1、文档读取TextReader 读取 resources/rag/terms-of-service.txt 文件内容
 			 * 2、TokenTextSplitter 按token长度切分文本（避免大文本超出模型限制）
@@ -62,7 +61,7 @@ public class AgentApplication  {
 			vectorStore.write(new TokenTextSplitter().transform(new TextReader(termsOfServiceDocs).read()));
 
 			// 相似性搜索检测
-			vectorStore.similaritySearch("Cancelling Bookings").forEach(doc -> {
+			vectorStore.similaritySearch("取消预订").forEach(doc -> {
 				logger.info("Similar Document: {}", doc.getText());
 			});
 		};

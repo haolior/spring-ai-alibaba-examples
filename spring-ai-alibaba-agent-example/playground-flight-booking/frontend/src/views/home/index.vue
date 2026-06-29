@@ -4,7 +4,7 @@
       <a-col :span="8">
         <a-card class="card chat">
           <template #title>
-            <label style="font-size: 25px">Funnair support</label>
+            <label style="font-size: 25px">Funnair 客服助手</label>
           </template>
           <div class="flex-grow">
             <a-card class="chat-body">
@@ -20,12 +20,12 @@
               <a-input
                 @keydown.enter="forHelp"
                 v-model:value="question"
-                placeholder="Message"
+                placeholder="请输入您的问题"
               ></a-input>
             </a-col>
             <a-col :span="4">
               <a-button @click="forHelp" :disabled="lock" type="primary"
-                >Send</a-button
+                >发送</a-button
               >
             </a-col>
           </a-row>
@@ -95,32 +95,32 @@ const bookingInfo = reactive({
       key: "bookingNumber",
     },
     {
-      title: "Name",
+      title: "姓名",
       dataIndex: "name",
       key: "name",
     },
     {
-      title: "Date",
+      title: "日期",
       dataIndex: "date",
       key: "date",
     },
     {
-      title: "From",
+      title: "出发地",
       dataIndex: "from",
       key: "from",
     },
     {
-      title: "To",
+      title: "目的地",
       dataIndex: "to",
       key: "to",
     },
     {
-      title: "Status",
+      title: "状态",
       dataIndex: "bookingStatus",
       key: "bookingStatus",
     },
     {
-      title: "Booking Class",
+      title: "舱位",
       dataIndex: "bookingClass",
       key: "bookingClass",
     },

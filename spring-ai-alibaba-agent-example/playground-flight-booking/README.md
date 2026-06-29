@@ -1,23 +1,23 @@
-# AI powered expert system demo
+# AI 机票预订专家系统示例
 
-This app shows how you can use Spring AI Alibaba to build an AI-powered system that:
+这个应用展示如何使用 Spring AI Alibaba 构建一个 AI 专家系统，核心能力包括：
 
-- Has access to terms and conditions (retrieval augmented generation, RAG)
-- Can access tools (Java methods) to perform actions (Function Calling)
-- Uses an LLM to interact with the user
+- 读取服务条款并回答问题（检索增强生成，RAG）
+- 调用工具执行业务操作（Java 方法，Function Calling）
+- 使用大语言模型与用户进行自然语言交互
 
 ![spring-ai-alibaba-flight-booking](diagram.png)
 
-## Requirements
+## 环境要求
 
 - Java 17+
-- Dashscope API key in `AI_DASHSCOPE_API_KEY` environment variable
+- 在环境变量 `AI_DASHSCOPE_API_KEY` 中配置 DashScope API Key
 
-## Running
+## 运行方式
 
-Run the app by running `Application.java` in your IDE or `mvn spring-boot:run` in the command line.
+可以在 IDE 中运行 `Application.java`，也可以在命令行执行 `mvn spring-boot:run`。
 
-Add to the POM the Spring AI Alibaba boot starter:
+POM 中需要添加 Spring AI Alibaba Boot Starter：
 
 ```xml
 <dependency>
@@ -27,14 +27,14 @@ Add to the POM the Spring AI Alibaba boot starter:
 </dependency>
 ```
 
-Add the DashScope configuration to the `application.properties`:
+在 `application.properties` 中添加 DashScope 配置：
 
 ```properties
 spring.ai.dashscope.api-key=${AI_DASHSCOPE_API_KEY}
 spring.ai.dashscope.chat.options.model=qwen-max
 ```
 
-## Build Jar
+## 构建 Jar
 
 ```shell
 ./mvnw clean package
@@ -44,12 +44,12 @@ spring.ai.dashscope.chat.options.model=qwen-max
 java -jar ./target/playground-flight-booking-0.0.1-SNAPSHOT.jar
 ```
 
-## Build Frontend (as needed)
+## 构建前端（按需）
 
-Run the following command to build frontend, this is only necessary when you made changes to frontend.
+如果修改了前端代码，需要执行以下命令重新构建前端资源：
 
 ```shell
 mvn clean compile -Pbuild-frontend
 ```
 
-Then explore in [localhost:9000](http://localhost:9000)
+然后访问 [localhost:9000](http://localhost:9000) 查看效果。
