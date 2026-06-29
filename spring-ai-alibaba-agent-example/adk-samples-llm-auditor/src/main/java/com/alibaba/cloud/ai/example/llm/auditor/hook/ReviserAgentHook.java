@@ -19,18 +19,17 @@ package com.alibaba.cloud.ai.example.llm.auditor.hook;
 import com.alibaba.cloud.ai.graph.OverAllState;
 import com.alibaba.cloud.ai.graph.RunnableConfig;
 import com.alibaba.cloud.ai.graph.agent.hook.ModelHook;
-import com.alibaba.cloud.ai.graph.state.RemoveByHash;
 import org.springframework.ai.chat.messages.AssistantMessage;
-import org.springframework.ai.chat.messages.Message;
-import org.springframework.ai.content.Media;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 /**
+ * 修订 Agent Hook。
+ *
+ * <p>该 Hook 会在修订 Agent 输出后移除 {@code ---END-OF-EDIT---} 标记，让最终响应更适合作为接口结果返回。
+ *
  * @author : zhengyuchao
  * @date : 2026/1/22
  */
@@ -58,9 +57,9 @@ public class ReviserAgentHook  extends ModelHook {
         }
         if(messagesOpt.get() instanceof AssistantMessage){
             AssistantMessage message = (AssistantMessage) messagesOpt.get();
-            // 构建新的消息列表，保持原顺序
+            // 移除修订 Agent 按提示词输出的结束标记。
             String text = message.getText();
-            String newMessage = "";
+            String newMessage = text;
             if(text.contains(_END_OF_EDIT_MARK)){
                 newMessage = text.replace(_END_OF_EDIT_MARK,"");
             }

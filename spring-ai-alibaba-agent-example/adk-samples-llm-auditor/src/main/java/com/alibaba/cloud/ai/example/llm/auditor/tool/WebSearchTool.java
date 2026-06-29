@@ -34,6 +34,10 @@ import java.util.Map;
 import java.util.function.BiFunction;
 
 /**
+ * Tavily 联网搜索工具。
+ *
+ * <p>该工具用于给审稿 Agent 提供外部事实依据，返回摘要、来源标题、内容片段和链接。
+ *
  * @author : zhengyuchao
  * @date : 2026/1/22
  */
@@ -55,7 +59,7 @@ public class WebSearchTool implements BiFunction<WebSearchTool.Request, ToolCont
 
     @Override
     public String apply(Request request, ToolContext toolContext) {
-        log.info("🔍 Tavily Searching for: {}", request.query);
+        log.info("Tavily 开始联网搜索：{}", request.query);
 
         try {
             // 1. 构建请求头
@@ -99,12 +103,12 @@ public class WebSearchTool implements BiFunction<WebSearchTool.Request, ToolCont
             }
 
             String finalResult = output.toString();
-            // log.info("Search Result: {}", finalResult); // 调试时可以打开
+            // log.info("搜索结果：{}", finalResult); // 调试时可以打开
             return finalResult;
 
         } catch (Exception e) {
-            log.error("Tavily search failed", e);
-            return "搜索服务异常: " + e.getMessage();
+            log.error("Tavily 联网搜索失败", e);
+            return "搜索服务异常：" + e.getMessage();
         }
     }
 
@@ -115,7 +119,7 @@ public class WebSearchTool implements BiFunction<WebSearchTool.Request, ToolCont
                 .build();
     }
 
-    // --- DTO 类定义 ---
+    // DTO 类定义。
 
     @JsonClassDescription("搜索请求参数")
     public record Request(
@@ -131,7 +135,7 @@ public class WebSearchTool implements BiFunction<WebSearchTool.Request, ToolCont
     @JsonIgnoreProperties(ignoreUnknown = true)
     private static class TavilyResponse {
         @JsonProperty("answer")
-        public String answer; // Tavily 自动总结的答案
+        public String answer; // Tavily 自动总结的答案。
 
         @JsonProperty("results")
         public List<TavilyResult> results;
@@ -146,6 +150,6 @@ public class WebSearchTool implements BiFunction<WebSearchTool.Request, ToolCont
         public String url;
 
         @JsonProperty("content")
-        public String content; // 这是一个经过清洗的纯文本片段，非常适合 AI
+        public String content; // 经过清洗的纯文本片段，适合交给模型引用。
     }
 }

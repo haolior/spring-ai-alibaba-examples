@@ -35,6 +35,11 @@ import java.util.List;
 import java.util.Optional;
 
 /**
+ * LLM 答案审核示例控制器。
+ *
+ * <p>该控制器演示使用 {@link SequentialAgent} 顺序编排两个 Agent：
+ * 先由审稿 Agent 联网核查事实，再由修订 Agent 根据审稿结果改写答案。
+ *
  * @author : zhengyuchao
  * @date : 2026/1/22
  */
@@ -48,7 +53,7 @@ public class LLMAuditorController {
         this.chatModel = chatModel;
     }
 
-    // 你的 Tavily API Key (建议放在配置文件 application.properties 中，通过 @Value 注入)
+    // Tavily API Key，通过 application.yml 中的 search.tavily.api-key 注入。
     @Value("${search.tavily.api-key}")
     private String tavilyApiKey;
 
@@ -129,7 +134,7 @@ public class LLMAuditorController {
             太阳是球形的，非常热。
             ---END-OF-EDIT---
             
-            所有Message中含有问答对和审稿人提供的调查结果：
+            所有消息中包含问答对和审稿人提供的调查结果：
             """;
 
     private static final String criticAgentPrompt= """
@@ -177,13 +182,17 @@ public class LLMAuditorController {
             
             #输出格式
             
-            输出的最后一个块应该是一个markdown格式的列表，总结了验证结果。对于您验证的每个CLAIM，您应该输出该CLAIM（作为一个独立的语句）、答案文本中相应的部分、判决和证明。
+            输出的最后一个块应该是一个 Markdown 格式的列表，总结验证结果。对于你验证的每个主张，都应该输出该主张（作为独立语句）、答案文本中的对应部分、裁决和证据。
             
-            user信息为你需要反复检查的问题：
+            用户消息是你需要反复检查的问题：
             """;
 
     @GetMapping("/agent")
     public String agent(@RequestParam(value = "query", defaultValue = "中国的首都是哪里?") String query){
+        // instruction 是当前 Agent 的任务说明，会作为模型调用时的重要上下文，
+        // 用来告诉审稿 Agent 应该如何审核答案、何时使用联网搜索工具。
+        // outputKey 用来指定该 Agent 的最终输出写入 OverAllState 时使用的 key，
+        // 后续 Agent、Hook 或 Controller 可以通过这个 key 读取审稿结果。
         ReactAgent criticAgent = ReactAgent.builder()
                 .name("critic_agent")
                 .description("")
@@ -194,6 +203,9 @@ public class LLMAuditorController {
                 .outputKey("critic_agent_output")
                 .build();
 
+        // 这里的 reviser Agent 不再负责搜索，而是读取前面审稿 Agent 的输出，
+        // 根据 instruction 中定义的修订规则生成最终答案。
+        // 单独设置 outputKey 可以把修订结果和审稿结果分开保存，便于页面展示或调试。
         ReactAgent reviserAgent = ReactAgent.builder()
                 .name("reviser_agent")
                 .description("")
@@ -203,9 +215,12 @@ public class LLMAuditorController {
                 .outputKey("reviser_agent_output")
                 .build();
 
+        // SequentialAgent 用来按 subAgents 列表顺序执行多个 Agent。
+        // 本示例固定为“先审稿，再修订”：criticAgent 先产出审核意见，
+        // reviserAgent 再基于前一步结果改写答案，适合开发者明确知道流程顺序的场景。
         SequentialAgent llmAuditor = SequentialAgent.builder()
                 .name("llm_auditor")
-                .description("评估llm生成的答案，使用Web，并改进响应以确保与真实世界保持一致")
+                .description("评估 LLM 生成的答案，必要时使用联网搜索，并修订答案以确保其与真实世界事实一致。")
                 .subAgents(List.of(criticAgent,reviserAgent))
                 .build();
 
@@ -213,20 +228,20 @@ public class LLMAuditorController {
             Optional<OverAllState> overAllState = llmAuditor.invoke(query);
             OverAllState state = overAllState.get();
             StringBuilder output = new StringBuilder();
-            // 访问各个Agent的输出
+            // 访问各个 Agent 的输出。
             state.value("critic_agent_output", AssistantMessage.class).ifPresent(r -> {
-                output.append("===============critic_agent_ouput============\n")
-                        .append("critic_agent_output:    \n")
+                output.append("===============审稿 Agent 输出============\n")
+                        .append("审稿结果：\n")
                         .append(r.getText()).append("\n")
-                        .append("===============end============\n")
+                        .append("===============审稿结束============\n")
                 ;
 
             });
             state.value("reviser_agent_output", AssistantMessage.class).ifPresent(r -> {
-                output.append("===============reviser_agent_output============\n")
-                        .append("reviser_agent_output:    \n")
+                output.append("===============修订 Agent 输出============\n")
+                        .append("修订结果：\n")
                         .append(r.getText()).append("\n")
-                        .append("===============end============\n")
+                        .append("===============修订结束============\n")
                 ;
             });
             return output.toString();

@@ -1,9 +1,9 @@
-# Spring AI Alibaba LLM Auditor Example
+# Spring AI Alibaba LLM 答案审核示例
 
 ## 简介
 
 此示例演示了如何使用 Spring AI Alibaba 构建一个 LLM 答案审核系统。该系统通过两个 Agent 的协作，对 AI 生成的答案进行事实核查和修订，确保答案的准确性和可靠性。
-参考自 google adk样例   https://github.com/google/adk-samples/tree/main/python/agents/llm-auditor
+参考自 Google ADK 示例：https://github.com/google/adk-samples/tree/main/python/agents/llm-auditor
 ### 核心功能
 
 - **Critic Agent（审稿 Agent）**：使用联网搜索工具验证答案中的事实声明，识别不准确、有争议或不支持的主张
@@ -15,15 +15,15 @@
 ```
 用户查询
     ↓
-LLM Auditor (SequentialAgent)
+LLM 答案审核器（SequentialAgent）
     ↓
 ┌─────────────────┐
-│  Critic Agent   │ → 使用 WebSearchTool 验证事实
+│  审稿 Agent     │ → 使用 WebSearchTool 验证事实
 │  (审稿 Agent)   │ → CriticAgentHook 提取引用
 └─────────────────┘
     ↓
 ┌─────────────────┐
-│  Reviser Agent  │ → 根据审稿结果修订答案
+│  修订 Agent     │ → 根据审稿结果修订答案
 │  (修订 Agent)   │ → ReviserAgentHook 清理标记
 └─────────────────┘
     ↓
@@ -32,9 +32,9 @@ LLM Auditor (SequentialAgent)
 
 ## 核心组件
 
-### 1. LLMAuditorController
+### 1. LLMAuditorController（主控制器）
 
-主要的 REST Controller，提供 `/ai/agent` 接口。
+主要的 REST 控制器，提供 `/ai/agent` 接口。
 
 **接口路径：** `GET /ai/agent`
 
@@ -43,7 +43,7 @@ LLM Auditor (SequentialAgent)
 **请求参数：**
 - `query` (可选，默认值: "中国的首都是哪里?"): 包含问题和答案的查询字符串
 
-**返回格式：** 文本格式，包含 critic_agent_output 和 reviser_agent_output
+**返回格式：** 文本格式，包含审稿 Agent 输出和修订 Agent 输出
 
 **示例请求：**
 ```bash
@@ -59,10 +59,10 @@ GET http://localhost:8080/ai/agent?query=问：为什么蓝莓是蓝色的？A�
 - 提供详细的验证理由和引用来源
 
 **工具：**
-- `WebSearchTool`: Tavily 联网搜索工具，用于查找最新信息和验证事实
+- `WebSearchTool`：Tavily 联网搜索工具，用于查找最新信息和验证事实
 
 **Hook：**
-- `CriticAgentHook`: 从工具响应中提取引用信息，格式化为 Markdown 引用
+- `CriticAgentHook`：从工具响应中提取引用信息，格式化为 Markdown 引用
 
 ### 3. ReviserAgent（修订 Agent）
 
@@ -72,7 +72,7 @@ GET http://localhost:8080/ai/agent?query=问：为什么蓝莓是蓝色的？A�
 - 修正不准确的主张，平衡有争议的观点，删除不支持的主张
 
 **Hook：**
-- `ReviserAgentHook`: 清理答案中的 `---END-OF-EDIT---` 标记
+- `ReviserAgentHook`：清理答案中的 `---END-OF-EDIT---` 标记
 
 ### 4. WebSearchTool（联网搜索工具）
 
@@ -165,19 +165,19 @@ curl -X GET -G --data-urlencode 'query=问：为什么蓝莓是蓝色的？A：�
 **响应示例：**
 
 ```
-===============critic_agent_ouput============
-critic_agent_output:    
+===============审稿 Agent 输出============
+审稿结果：
 [审稿结果内容，包含验证的主张和裁决]
 
-Reference:
+引用来源：
 
 * [蓝莓为什么是蓝色的](https://jandan.net/p/115589): 蓝莓之所以呈现出蓝色，秘密就在于其蜡质覆盖层的结构...
 * [藍莓的藍色來自兩個關鍵因素](https://www.threads.com/...): 內部的花青素：讓果肉呈現紫色...
-===============end============
-===============reviser_agent_output============
-reviser_agent_output:    
+===============审稿结束============
+===============修订 Agent 输出============
+修订结果：
 [修订后的答案内容]
-===============end============
+===============修订结束============
 ```
 
 ### 其他评估接口
@@ -194,18 +194,18 @@ reviser_agent_output:
 
 ### 核心依赖
 
-- **Spring Boot**: 应用框架
-- **Spring AI Alibaba**: AI 功能集成
-- **spring-ai-alibaba-starter-dashscope**: DashScope 模型支持
-- **spring-boot-starter-web**: Web 支持
+- **Spring Boot**：应用框架
+- **Spring AI Alibaba**：AI 功能集成
+- **spring-ai-alibaba-starter-dashscope**：DashScope 模型支持
+- **spring-boot-starter-web**：Web 支持
 
 ### 关键技术点
 
-1. **SequentialAgent**: 顺序执行多个 Agent
-2. **ReactAgent**: 支持工具调用的 Agent
-3. **ModelHook**: Agent 执行前后的钩子函数
-4. **FunctionToolCallback**: 函数工具回调
-5. **引用提取**: 从工具响应中自动提取和格式化引用信息
+1. **SequentialAgent**：顺序执行多个 Agent
+2. **ReactAgent**：支持工具调用的 Agent
+3. **ModelHook**：Agent 执行前后的钩子函数
+4. **FunctionToolCallback**：函数工具回调
+5. **引用提取**：从工具响应中自动提取和格式化引用信息
 
 ### 工作流程
 
@@ -224,21 +224,21 @@ reviser_agent_output:
 
 ## 注意事项
 
-1. **环境变量**: 
+1. **环境变量**：
    - 必须配置 `AI_DASHSCOPE_API_KEY`（DashScope API Key）
    - 必须配置 `WEB_SEARCH_KEY`（Tavily API Key）
 
-2. **网络连接**: 
+2. **网络连接**：
    - 需要能够访问阿里云 DashScope 服务
    - 需要能够访问 Tavily API 服务（https://api.tavily.com）
 
-3. **API 限制**: 
+3. **API 限制**：
    - Tavily API 有免费额度限制，超出后需要付费
    - 建议在生产环境中监控 API 使用量
 
-4. **字符编码**: 所有响应使用 UTF-8 编码，支持中文内容
+4. **字符编码**：所有响应使用 UTF-8 编码，支持中文内容
 
-5. **端口配置**: 默认端口 8080，可在 `application.yml` 中修改
+5. **端口配置**：默认端口 8080，可在 `application.yml` 中修改
 
 ## 参考文档
 

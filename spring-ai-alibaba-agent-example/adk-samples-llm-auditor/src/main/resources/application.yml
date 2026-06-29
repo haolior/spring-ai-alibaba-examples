@@ -7,7 +7,7 @@ spring:
 
   ai:
     dashscope:
-      api-key: ${AI_DASHSCOPE_API_KEY}
+      api-key: ${DASHSCOPE_API_KEY}
       chat:
         options:
           model: qwen-plus
@@ -17,7 +17,7 @@ spring:
 
 search:
   tavily:
-    api-key: ${WEB_SEARCH_KEY}
+    api-key: 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
 
 logging:
   level:

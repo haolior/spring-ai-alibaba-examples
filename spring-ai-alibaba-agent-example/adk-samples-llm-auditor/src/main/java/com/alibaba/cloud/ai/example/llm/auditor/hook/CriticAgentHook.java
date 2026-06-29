@@ -33,6 +33,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
+ * 审稿 Agent Hook。
+ *
+ * <p>该 Hook 会在审稿 Agent 输出后，从 Tavily 工具响应中提取引用链接，并追加到审稿结果末尾。
+ *
  * @author : zhengyuchao
  * @date : 2026/1/22
  */
@@ -73,7 +77,7 @@ public class CriticAgentHook extends ModelHook {
         }
         
         // 构建引用文本
-        StringBuilder referenceText = new StringBuilder("\n\nReference:\n\n");
+        StringBuilder referenceText = new StringBuilder("\n\n引用来源：\n\n");
         for (String ref : references) {
             referenceText.append(ref);
         }
@@ -156,8 +160,8 @@ public class CriticAgentHook extends ModelHook {
             }
             
         } catch (Exception e) {
-            log.warn("Failed to extract references from state messages: {}", e.getMessage());
-            log.debug("State content: {}", state, e);
+            log.warn("从状态消息中提取引用失败：{}", e.getMessage());
+            log.debug("状态内容：{}", state, e);
         }
         
         return references;
@@ -253,8 +257,8 @@ public class CriticAgentHook extends ModelHook {
             }
             
         } catch (Exception e) {
-            log.warn("Failed to parse Tavily search results: {}", e.getMessage());
-            log.debug("Response data: {}", responseData, e);
+            log.warn("解析 Tavily 搜索结果失败：{}", e.getMessage());
+            log.debug("响应数据：{}", responseData, e);
         }
         
         return references;

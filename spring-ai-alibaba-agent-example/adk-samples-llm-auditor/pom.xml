@@ -12,8 +12,8 @@
 
     <artifactId>adk-samples-llm-auditor</artifactId>
     <version>${revision}</version>
-    <name>adk-samples-llm-auditor</name>
-    <description>adk-samples-llm-auditor</description>
+    <name>Spring AI Alibaba LLM 答案审核示例</name>
+    <description>演示如何使用 SequentialAgent 编排审稿 Agent 和修订 Agent，对 LLM 生成答案进行事实核查和修订</description>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
@@ -22,7 +22,7 @@
     </properties>
 
     <dependencies>
-        <!--springboot web-->
+        <!-- Spring Boot Web 支持 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
@@ -34,7 +34,7 @@
             <version>${spring-ai-alibaba.version}</version>
         </dependency>
 
-        <!--aliyun dashscope-->
+        <!-- 阿里云 DashScope 模型支持 -->
         <dependency>
             <groupId>com.alibaba.cloud.ai</groupId>
             <artifactId>spring-ai-alibaba-starter-dashscope</artifactId>
