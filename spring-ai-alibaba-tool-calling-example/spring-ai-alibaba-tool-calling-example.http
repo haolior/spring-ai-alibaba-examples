@@ -28,3 +28,7 @@ GET http://localhost:18080/weather/chat?query=请告诉我北京1天以后的天
 ###
 # WeatherController类的chatWithWeatherFunction方法
 GET http://localhost:18080/weather/chat-tool-function-name?query=请告诉我北京1天以后的天气
+
+###
+# CampusAssistantController类的chatWithCampusTools方法
+GET http://localhost:18080/campus/chat-tools?query=请查询上海当前时间和天气，并为我安排一小时的校园跑步计划
